@@ -11,6 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server-express": "^2.15.1",
-    "mongoose": "^5.9.16"
+    "bcrypt": "^5.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.16",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
   }
 }
