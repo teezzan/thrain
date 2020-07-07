@@ -8,9 +8,20 @@ var author = [
     { name: "Jet li", age: 8 }
 ]
 
+const users = [
+    {
+        fullname: 'John',
+        email: 'john@mail.com',
+        password: 'john123',
+        username: 'yoursite.net',
+    }
+]
+
 const resolvers = {
     Query: {
-        books: () => books
+        books: () => books,  // what to return for book query. use service methods
+        author: () => author, // what to return for author query. use service methods
+        user: () => users // what to return for user query. use service methods
     },
     Book: {
         author(parent,args,context) {
