@@ -4,6 +4,7 @@ const typeDefs = require('./models/Typedefs');
 const resolvers = require('./resolvers');
 var {passport} = require('./services/passport');
 var jwt = require('jsonwebtoken')
+var db = require('./db')
 
 
 
