@@ -10,12 +10,13 @@ var author = [
 
 const resolvers = {
     Query: {
-        books: () => books,
-        author: () => author
+        books: () => books
     },
     Book: {
-        author(parent) {
-            console.log(parent);
+        author(parent,args,context) {
+            // console.log(parent);
+            console.log(context)
+            // console.log(args)
             return {
                 name: author[parent.author].name,
                 age: author[parent.author].age,

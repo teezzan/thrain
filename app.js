@@ -1,19 +1,12 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./models/Typedefs');
-const resolvers = require('./resolvers')
-var passport = require('passport')
+const resolvers = require('./resolvers');
+var {passport} = require('./services/passport');
 var jwt = require('jsonwebtoken')
 
 
 
-var JwtStrategy = require('passport-jwt').Strategy,
-    ExtractJwt = require('passport-jwt').ExtractJwt;
-var opts = {}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
-opts.issuer = 'accounts.examplesoft.com';
-opts.audience = 'yoursite.net';
 
 
 const users = [
@@ -21,38 +14,38 @@ const users = [
         id: 1,
         name: 'John',
         email: 'john@mail.com',
-        password: 'john123'
+        password: 'john123',
+        audience: 'yoursite.net',
+        issuer: 'accounts.examplesoft.com'
     }
 ]
 
-passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-    // User.findOne({ id: jwt_payload.sub }, function (err, user) {
-    // if (err) {
-    //     return done(err, false);
-    // }
-    // if (user) {
-    //     return done(null, user);
-    // } else {
-    //     return done(null, false);
-    //     // or you could create a new account
-    // }
-    console.log(jwt_payload);
-
-    const user = users.find(user => user.id === payload.id) || null
-
-    return done(null, user)
-    //     });
-}));
-passport.initialize()
 const app = express();
+
+
 app.use('/graphql', (req, res, next) => {
+    // console.log(req.headers);
+
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if (user) {
-            req.user = user
+            req.user=user;
+            // console.log(user);
+            // console.log("user", user);
+            // console.log("info", info);
+            // console.log("err", err);
         }
-
-        next()
+        // console.log("user", user);
+        // console.log("info", info);
+        // console.log("err", err);
+        next();
     })(req, res, next)
+})
+
+app.get("/gen", (req, res) => {
+    var token = jwt.sign(users[0], "config.secret", {
+        expiresIn: 86400 // expires in 24 hours
+    });
+    res.status(200).json({ token });
 })
 
 
