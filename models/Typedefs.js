@@ -20,14 +20,14 @@ const typeDefs = gql`
               author: User,
               timeCreated: String,
               tags: [String],
-              likes: Number,
+              likes: Int,
               comments: [Comment]
    }
    type Comment { 
               text: String, 
               author: User,
               timeCreated: String,
-              likes: Number,
+              likes: Int,
               replies: [Comment]
    }
 `;
