@@ -2,7 +2,8 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./models/Typedefs');
 const resolvers = require('./resolvers');
-var {passport} = require('./services/passport');
+const UserApi = require('./datasources/UserSource');
+var { passport } = require('./services/passport');
 var jwt = require('jsonwebtoken')
 var db = require('./db')
 
@@ -28,14 +29,14 @@ app.use('/graphql', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if (user) {
             user.auth = true;
-            req.user={user};
+            req.user = { user };
             // console.log(user);
             // console.log("user", user);
             // console.log("info", info);
             // console.log("err", err);
         }
-        else{
-            req.user={auth: false}
+        else {
+            req.user = { auth: false }
         }
         // console.log("user", user);
         // console.log("info", info);
@@ -53,7 +54,11 @@ app.get("/gen", (req, res) => {
 
 
 const server = new ApolloServer({
-    typeDefs, resolvers, context: ({ req }) => ({
+    typeDefs, resolvers,
+    dataSources: () => ({
+        userApi: new UserApi()
+    })
+    , context: ({ req }) => ({
         user: req.user
     })
 });

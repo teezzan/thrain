@@ -19,9 +19,12 @@ const users = [
 
 const resolvers = {
     Query: {
-        books: () => books,  // what to return for book query. use service methods
+        books(parent,args,{dataSources,user}) {
+            // console.log(context)
+            return dataSources.userApi.getUser(user);
+        },  // what to return for book query. use service methods
         author: () => author, // what to return for author query. use service methods
-        user: () => users // what to return for user query. use service methods
+        user: () => users // what to return for author query. use service methods
     },
     Book: {
         author(parent,args,context) {
