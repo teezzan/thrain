@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-var Idea = require("./Idea");
-var Comment = require("./Comment");
+// var Idea = require("./Idea");
+// var Comment = require("./Comment");
 
 
 function randomint(min, max) {
@@ -16,15 +16,15 @@ var UserSchema = new mongoose.Schema({
   resetPasswordExpires: { type: Date, default: Date.now() },
   ideas: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: Idea,
+    ref: 'Idea',
   }],
   liked_ideas: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: Idea,
+    ref: 'Idea',
   }],
   comments:[{
     type: mongoose.Schema.Types.ObjectId,
-    ref: Comment,
+    ref: 'Comment',
 }]
 });
 mongoose.model('User', UserSchema);

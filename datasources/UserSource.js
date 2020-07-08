@@ -1,4 +1,5 @@
 const GenericDataSource = require('apollo-datasource-generic');
+var UserService = require('../services/UserService')
 
 
 var books = [{ title: "Legend of tomorrow", author: 1 },
@@ -27,6 +28,12 @@ class UserApi extends GenericDataSource {
     getUser(user) {
         console.log(user);
         return this.books;
+    }
+
+    createUser = async (userObject) => {
+        UserService.createUser(userObject)
+            .then((response) => response)
+            .catch((err) => err)
     }
 
 }

@@ -36,7 +36,13 @@ const resolvers = {
                 age: author[parent.author].age,
             };
         }
-    }
+    },
+    Mutation: {
+        login: async (_, { email, password, username }, { dataSources }) => {
+         return dataSources.userApi.createUser({ email, password, username })
+          
+        }
+      },
 };
 
 module.exports = resolvers;

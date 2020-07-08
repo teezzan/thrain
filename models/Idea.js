@@ -1,9 +1,11 @@
 var mongoose = require('mongoose');
 var User = require("./User");
+// var UserSchema = require('./User')
 var Comment = require("./Comment");
 function randomint(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
 var IdeaSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
