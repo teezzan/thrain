@@ -40,10 +40,14 @@ const resolvers = {
     Mutation: {
         register: async (_, { email, password, username }, { dataSources }) => {
             console.log("usernutation");
-            var tee = await dataSources.userApi.createUser({ email, password, username })
-            console.log("tee", tee);
-            return tee
-            
+            dataSources.userApi.createUser({ email, password, username })
+                .then((resp) => {
+                    console.log("tee", resp);
+                    return resp
+                })
+            // console.log("tee", tee);
+            // return tee
+
         }
     },
 };

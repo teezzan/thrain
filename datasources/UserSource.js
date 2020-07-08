@@ -1,4 +1,4 @@
-const GenericDataSource = require('apollo-datasource-generic');
+var  { DataSource } = require('apollo-datasource')
 var User = require("../models/User");
 var mongoose = require("mongoose");
 var bcrypt = require('bcryptjs');
@@ -29,7 +29,7 @@ function parseUser(userData) {
 
 
 
-class UserApi extends GenericDataSource {
+class UserApi extends DataSource {
     constructor() {
         super();
         this.users = [
@@ -52,7 +52,7 @@ class UserApi extends GenericDataSource {
         return this.books;
     }
 
-    createUser = async (userObject) => {
+    async createUser(userObject) {
 
         console.log("userService Entered");
         var hashedPassword = bcrypt.hashSync(userObject.password, 8);
@@ -71,6 +71,19 @@ class UserApi extends GenericDataSource {
             console.log("response", response);
             return response
         });
+        return {
+            status: '200',
+            message: 'User Created Successfully',
+            user: {
+              fullname: '',
+              email: 'ad',
+              username: '1q1dddw',
+              verified: false,
+              ideas: [],
+              liked_ideas: [],
+              comments: []
+            }
+          }
     }
 
 

@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-datasource": "^0.7.2",
     "apollo-datasource-generic": "^0.5.1",
     "apollo-server-express": "^2.15.1",
     "bcrypt": "^5.0.0",
