@@ -5,7 +5,7 @@ const typeDefs = gql`
   type Book { title: String, author: Author }
   type Author { name: String, age: String }
   type User { 
-              fullname: String!, 
+              fullname: String, 
               email:String!, 
               username:String!,
               verified: Boolean!,
@@ -31,18 +31,18 @@ const typeDefs = gql`
    
    }
    type UserUpdateResponse {
-      success: Boolean!
+      status: String!
       message: String
       user: User
       token: String
     }
     type IdeaUpdateResponse {
-      success: Boolean!
+      status: String!
       message: String
       idea: Idea
     }
     type CommentUpdateResponse {
-      success: Boolean!
+      status: String!
       message: String
       comment: Comment
     }

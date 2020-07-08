@@ -20,29 +20,7 @@ function parseUser(userData) {
 }
 
 exports.createUser = async (userObject) => {
-    return new Promise((resolve, reject) => {
-
-        var hashedPassword = bcrypt.hashSync(req.body.password, 8);
-        const user = new User({
-            fullname: userObject.fullname,
-            email: userObject.email,
-            username: userObject.username,
-            password: hashedPassword
-        });
-        user.save((err, userData) => {
-            if (err) {
-                var response = {
-                    success: "401",
-                    message: "User Not Created"
-                }
-                reject(response);
-            };
-            var response = {
-                success: "200",
-                message: "User Created Successfully",
-                user: parseUser(userData)
-            }
-            resolve(response);
-        });
-    });
+    // return new Promise((resolve, reject) => {
+    
+    // });
 };

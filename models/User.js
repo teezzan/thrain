@@ -7,7 +7,7 @@ function randomint(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 var UserSchema = new mongoose.Schema({
-  fullname: { type: String, required: true },
+  fullname: { type: String, default:""},
   email: { type: String, unique: true },
   username: { type: String, unique: true, default: `HM${randomint(1, 1000)}${randomint(1, 1000)}` },
   password: String,

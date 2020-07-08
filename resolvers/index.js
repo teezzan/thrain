@@ -19,7 +19,7 @@ const users = [
 
 const resolvers = {
     Query: {
-        books(parent,args,{dataSources,user}) {
+        books(parent, args, { dataSources, user }) {
             // console.log(context)
             return dataSources.userApi.getUser(user);
         },  // what to return for book query. use service methods
@@ -27,7 +27,7 @@ const resolvers = {
         user: () => users // what to return for author query. use service methods
     },
     Book: {
-        author(parent,args,context) {
+        author(parent, args, context) {
             // console.log(parent);
             console.log(context)
             // console.log(args)
@@ -38,11 +38,14 @@ const resolvers = {
         }
     },
     Mutation: {
-        login: async (_, { email, password, username }, { dataSources }) => {
-         return dataSources.userApi.createUser({ email, password, username })
-          
+        register: async (_, { email, password, username }, { dataSources }) => {
+            console.log("usernutation");
+            var tee = await dataSources.userApi.createUser({ email, password, username })
+            console.log("tee", tee);
+            return tee
+            
         }
-      },
+    },
 };
 
 module.exports = resolvers;
