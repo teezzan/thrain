@@ -1,4 +1,4 @@
-var  { DataSource } = require('apollo-datasource')
+var { DataSource } = require('apollo-datasource')
 var User = require("../models/User");
 var mongoose = require("mongoose");
 var bcrypt = require('bcryptjs');
@@ -52,38 +52,31 @@ class UserApi extends DataSource {
         return this.books;
     }
 
-    async createUser(userObject) {
+    async createUser(userObject, callback) {
 
         console.log("userService Entered");
         var hashedPassword = bcrypt.hashSync(userObject.password, 8);
-
-        User.create({
-            email: userObject.email,
-            username: userObject.username,
-            password: hashedPassword
-        }, (err, userData) => {
-            if (err) return { status: "401", message: "User Not Created" };
-            var response = {
+        var user, response;
+        try {
+            user = await User.create({
+                email: userObject.email,
+                username: userObject.username,
+                password: hashedPassword
+            });
+            response = {
                 status: "200",
                 message: "User Created Successfully",
-                user: parseUser(userData)
+                user: parseUser(user)
             }
-            console.log("response", response);
-            return response
-        });
-        return {
-            status: '200',
-            message: 'User Created Successfully',
-            user: {
-              fullname: '',
-              email: 'ad',
-              username: '1q1dddw',
-              verified: false,
-              ideas: [],
-              liked_ideas: [],
-              comments: []
-            }
-          }
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = { status: "401", message: "User Not Created" };
+
+        }
+        console.log(response);
+        return response;
+
     }
 
 

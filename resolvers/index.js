@@ -40,11 +40,13 @@ const resolvers = {
     Mutation: {
         register: async (_, { email, password, username }, { dataSources }) => {
             console.log("usernutation");
-            var tee = await dataSources.userApi.createUser({ email, password, username })
-                
-            console.log("tee", tee);
-            return tee
 
+            // await dataSources.userApi.createUser({ email, password, username }, (err, response) => {
+            //     console.log("tee", response);
+            //     return response;
+            // });
+            return dataSources.userApi.createUser({ email, password, username });
+            // return { status: '401', message: 'User Not Created' }
         }
     },
 };
