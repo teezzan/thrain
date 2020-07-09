@@ -85,15 +85,16 @@ class IdeaApi extends DataSource {
     }
 
     async getAllIdea(page, pages) {
-        console.log(page);
+        // console.log(page);
 
         var idea, response;
         try {
-            idea = await Idea.find({}).limit(page);
-
+            idea = await Idea.find({});//.limit(page);
+            // console.log("ideass ", idea);
+            
             response = {
                 status: "200",
-                idea: idea
+                ideas: idea
             }
         }
         catch (err) {
@@ -104,6 +105,7 @@ class IdeaApi extends DataSource {
             }
 
         }
+        console.log(response);        
         return response;
 
     }
