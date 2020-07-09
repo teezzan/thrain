@@ -7,7 +7,10 @@ const resolvers = {
         },
         userbyid(parent, {id}, { dataSources, user }) {
             return dataSources.userApi.getUserbyId(id);
-        }
+        },
+        userbyusername(parent, {username}, { dataSources, user }) {
+            return dataSources.userApi.getUserbyUsername(username);
+        },
     },
     // Book: {
     //     author(parent, args, context) {
@@ -24,6 +27,10 @@ const resolvers = {
         register: async (_, { email, password, username }, { dataSources }) => {
             console.log("usernutation");
             return dataSources.userApi.createUser({ email, password, username });
+        },
+        login: async (_, { password, username }, { dataSources }) => {
+            console.log("usernutation");
+            return dataSources.userApi.loginUser({ password, username });
         }
     },
 };

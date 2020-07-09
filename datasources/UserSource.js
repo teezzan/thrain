@@ -1,7 +1,9 @@
 var { DataSource } = require('apollo-datasource')
 var User = require("../models/User");
 var mongoose = require("mongoose");
+var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+var config = require('../config'); // get config file
 
 
 var books = [{ title: "Legend of tomorrow", author: 1 },
@@ -47,11 +49,23 @@ class UserApi extends DataSource {
 
     }
 
-    getUser(user) {
-        console.log(user);
-        return this.books;
-    }
+    async getUserbyUsername(username) {
 
+
+
+        var user, response;
+        try {
+            user = await User.findOne({ username: username });
+            response = user;
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = {}
+
+        }
+        return response;
+
+    }
     async createUser(userObject, callback) {
 
         console.log("userService Entered");
@@ -82,7 +96,7 @@ class UserApi extends DataSource {
     async getAllUser() {
 
         console.log("userService Entered");
-        
+
         var user, response;
         try {
             user = await User.find({});
@@ -98,11 +112,11 @@ class UserApi extends DataSource {
     }
     async getUserbyId(id) {
 
-        console.log("id",id);
-        
+        console.log("id", id);
+
         var user, response;
         try {
-            user = await User.findOne({_id:id});
+            user = await User.findOne({ _id: id });
             response = user;
         }
         catch (err) {
@@ -110,7 +124,43 @@ class UserApi extends DataSource {
             response = {}
 
         }
-        console.log(response)
+        return response;
+
+    }
+    async loginUser(userObject) {
+
+
+        var user, response;
+        try {
+            user = await User.findOne({ username: userObject.username });
+            var passwordIsValid = bcrypt.compareSync(userObject.password, user.password);
+            if (!passwordIsValid) {
+                response = {
+                    status: "404",
+                    message: "Wrong Password",
+                }
+            }
+            else {
+                var token = jwt.sign({ id: user._id, username: user.username }, config.secret, {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+                response = {
+                    status: "200",
+                    message: "Success",
+                    user: parseUser(user),
+                    token
+                }
+            }
+
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = response = {
+                status: "404",
+                message: "Wrong Password"
+            }
+
+        }
         return response;
 
     }
