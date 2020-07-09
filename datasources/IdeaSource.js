@@ -89,7 +89,7 @@ class IdeaApi extends DataSource {
 
         var idea, response;
         try {
-            idea = await Idea.find({});//.limit(page);
+            idea = await Idea.find({}).limit(page);
             // console.log("ideass ", idea);
             
             response = {
