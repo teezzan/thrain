@@ -1,12 +1,12 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
-  type Query {  user: [User] 
-                userbyid(id: ID!): User 
-                userbyusername(username: String!): User 
-                ideas(pages: Int!, page: Int! ): [Idea] 
-                ideasbytag(tag: String!) : [Idea]
-                ideasbyid(id: ID!) : Idea
+  type Query {  user: UserArrayUpdateResponse! 
+                userbyid(id: ID!): UserUpdateResponse! 
+                userbyusername(username: String!): UserUpdateResponse! 
+                ideas(pages: Int!, page: Int! ): IdeaArrayUpdateResponse! 
+                ideasbytag(tag: String!) : IdeaArrayUpdateResponse!
+                ideasbyid(id: ID!) : IdeaUpdateResponse!
                 }
   type User { 
               fullname: String, 
@@ -39,16 +39,33 @@ const typeDefs = gql`
       message: String
       user: User
       token: String
+      error: String
+    }
+    type UserArrayUpdateResponse {
+      status: String!
+      message: String
+      users: [User]
+      token: String
+      error: String
+      
     }
     type IdeaUpdateResponse {
       status: String!
       message: String
       idea: Idea
+      error: String
+    }
+    type IdeaArrayUpdateResponse {
+      status: String!
+      message: String
+      ideas: [Idea]
+      error: String
     }
     type CommentUpdateResponse {
       status: String!
       message: String
       comment: Comment
+      error: String
     }
    type Mutation {
           login(username: String!, password: String!): UserUpdateResponse! # login token 

@@ -3,6 +3,7 @@ const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./models/Typedefs');
 const resolvers = require('./resolvers');
 const UserApi = require('./datasources/UserSource');
+const IdeaApi = require('./datasources/IdeaSource');
 var { passport } = require('./services/passport');
 var jwt = require('jsonwebtoken')
 var db = require('./db')
@@ -36,7 +37,9 @@ app.use('/graphql', (req, res, next) => {
 const server = new ApolloServer({
     typeDefs, resolvers,
     dataSources: () => ({
-        userApi: new UserApi()
+        userApi: new UserApi(),
+        ideaApi: new IdeaApi()
+
     })
     , context: ({ req }) => (
         req.user

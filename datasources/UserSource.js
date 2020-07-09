@@ -1,5 +1,6 @@
 var { DataSource } = require('apollo-datasource')
 var User = require("../models/User");
+var Idea = require("../models/Idea");
 var mongoose = require("mongoose");
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
@@ -46,7 +47,7 @@ class UserApi extends DataSource {
             verified: user.verified,
             ideas: user.ideas
         }
-        if(userDetails.auth){
+        if (userDetails.auth) {
             userOut.fullname = user.fullname;
             userOut.liked_ideas = user.liked_ideas;
             userOut.email = user.email;
@@ -63,11 +64,18 @@ class UserApi extends DataSource {
         var user, response;
         try {
             user = await User.findOne({ username: username });
-            response = this.maskUser(user, this.userDetails);
+            
+            response = {
+                status: "200",
+                user: this.maskUser(user, this.userDetails)
+            }
         }
         catch (err) {
-            console.log("error occurred", err);
-            response = {}
+            console.log("error occurred", err.message);
+            response = {
+                status: "401",
+                error: err.message
+            }
 
         }
         return response;
@@ -83,12 +91,20 @@ class UserApi extends DataSource {
         var user, response;
         try {
             user = await User.find({});
-            response = user;
+            // response = user;
+            response = {
+                status: "200",
+                message: "User Created Successfully",
+                users: user
+            }
+
         }
         catch (err) {
             console.log("error occurred", err);
-            response = []
-
+            response = {
+                status: "401",
+                error: err.message
+            }
         }
         return response;
 
@@ -100,16 +116,29 @@ class UserApi extends DataSource {
         var user, response;
         try {
             user = await User.findOne({ _id: id });
-            response = this.maskUser(user, this.userDetails);;
+
+            response = {
+                status: "200",
+                user: this.maskUser(user, this.userDetails)
+            }
         }
         catch (err) {
-            console.log("error occurred", err);
-            response = {}
+            console.log("error occurred", err.message);
+            response = {
+                status: "401",
+                error: err.message
+            }
 
         }
         return response;
 
     }
+
+
+
+
+
+
 
 
     async loginUser(userObject) {
@@ -142,7 +171,8 @@ class UserApi extends DataSource {
             console.log("error occurred", err);
             response = response = {
                 status: "404",
-                message: "Wrong Password"
+                message: "Wrong Password",
+                error: err
             }
 
         }
@@ -168,7 +198,7 @@ class UserApi extends DataSource {
         }
         catch (err) {
             console.log("error occurred", err);
-            response = { status: "401", message: "User Not Created" };
+            response = { status: "401", message: "User Not Created", error: err };
 
         }
         console.log(response);
