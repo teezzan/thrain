@@ -172,7 +172,7 @@ class UserApi extends DataSource {
             response = response = {
                 status: "404",
                 message: "Wrong Password",
-                error: err
+                error: err.message
             }
 
         }
@@ -198,10 +198,10 @@ class UserApi extends DataSource {
         }
         catch (err) {
             console.log("error occurred", err);
-            response = { status: "401", message: "User Not Created", error: err };
+            response = { status: "401", message: "User Not Created", error: err.message };
 
         }
-        console.log(response);
+        // console.log(response);
         return response;
 
     }

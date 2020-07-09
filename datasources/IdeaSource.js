@@ -1,4 +1,5 @@
 var { DataSource } = require('apollo-datasource')
+var User = require("../models/User");
 var Idea = require("../models/Idea");
 
 
@@ -35,7 +36,28 @@ class IdeaApi extends DataSource {
         // console.log(config.context)
 
     }
+    async checkIdValidity(userDetails) {
+        var out = false;
+        var date = Date.now() / 1000;
+        if (userDetails.auth && date < userDetails.exp) {
+            try {
+                var user = await User.findOne({ _id: userDetails.id });
+                // console.log(user);
+                if (user != null) {
+                    out = true
+                }
 
+            }
+            catch (err) {
+                console.log("err", err.message);
+
+                out = false;
+            }
+
+        }
+        return out
+
+    }
 
 
     async getIdeabyId(id) {
@@ -64,11 +86,11 @@ class IdeaApi extends DataSource {
 
     async getAllIdea(page, pages) {
         console.log(page);
-        
+
         var idea, response;
         try {
             idea = await Idea.find({}).limit(page);
-            
+
             response = {
                 status: "200",
                 idea: idea
@@ -87,30 +109,39 @@ class IdeaApi extends DataSource {
     }
 
 
-    async createIdea(userObject, callback) {
+    async createIdea(userObject) {
 
-        // console.log("userService Entered");
-        // var hashedPassword = bcrypt.hashSync(userObject.password, 8);
-        // var user, response;
-        // try {
-        //     user = await User.create({
-        //         email: userObject.email,
-        //         username: userObject.username,
-        //         password: hashedPassword
-        //     });
-        //     response = {
-        //         status: "200",
-        //         message: "User Created Successfully",
-        //         user: parseUser(user)
-        //     }
-        // }
-        // catch (err) {
-        //     console.log("error occurred", err);
-        //     response = { status: "401", message: "User Not Created" };
 
-        // }
-        // console.log(response);
-        // return response;
+        var idea, response;
+        var tee = await this.checkIdValidity(this.userDetails)
+        console.log(tee);
+        if (tee) {
+            console.log("true entered");
+
+            try {
+                idea = await Idea.create({
+                    title: userObject.title,
+                    description: userObject.description,
+                    tags: userObject.tags,
+                    author: this.userDetails.id
+                });
+                response = {
+                    status: "200",
+                    message: "User Created Successfully",
+                    idea: idea
+                }
+            }
+            catch (err) {
+                console.log("error occurred", err);
+                response = { status: "401", message: "Idea Not Created", error: err.message };
+
+            }
+        }
+        else {
+            response = { status: "401", message: "Unauthorized" };
+        }
+        console.log(response);
+        return response;
 
     }
 

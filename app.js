@@ -13,22 +13,25 @@ const app = express();
 
 app.use('/graphql', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
+
         if (user) {
             //check expiry
             user.auth = true;
+            req.user = { user };
             // console.log(user);
             // console.log("user", user);
             // console.log("info", info);
             // console.log("err", err);
         }
         else {
-            user.auth = false;
+            var user={auth : false};
+            req.user = { user };
 
         }
-        // console.log("user", user);
+        // console.log("userauth", user);
         // console.log("info", info);
         // console.log("err", err);
-        req.user = { user };
+        
         next();
     })(req, res, next)
 })

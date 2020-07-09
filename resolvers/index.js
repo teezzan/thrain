@@ -38,6 +38,10 @@ const resolvers = {
         login: async (_, { password, username }, { dataSources }) => {
             console.log("usernutation");
             return dataSources.userApi.loginUser({ password, username });
+        },
+        createIdea: async (_, { title, description, tags }, { dataSources }) => {
+            console.log("Idea Creation");
+            return dataSources.ideaApi.createIdea({ title, description, tags });
         }
     },
 };
