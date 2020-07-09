@@ -79,7 +79,41 @@ class UserApi extends DataSource {
 
     }
 
+    async getAllUser() {
 
+        console.log("userService Entered");
+        
+        var user, response;
+        try {
+            user = await User.find({});
+            response = user;
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = []
+
+        }
+        return response;
+
+    }
+    async getUserbyId(id) {
+
+        console.log("id",id);
+        
+        var user, response;
+        try {
+            user = await User.findOne({_id:id});
+            response = user;
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = {}
+
+        }
+        console.log(response)
+        return response;
+
+    }
 
 
 
