@@ -9,6 +9,7 @@ const resolvers = {
             return dataSources.userApi.getUserbyId(id);
         },
         userbyusername(parent, {username}, { dataSources, user }) {
+            // console.log(user);
             return dataSources.userApi.getUserbyUsername(username);
         },
     },

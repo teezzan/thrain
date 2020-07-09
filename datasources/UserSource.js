@@ -3,12 +3,7 @@ var User = require("../models/User");
 var mongoose = require("mongoose");
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-var config = require('../config'); // get config file
-
-
-var books = [{ title: "Legend of tomorrow", author: 1 },
-{ title: "Who am I?", author: 2 },
-{ title: "The One", author: 2 }]
+var configure = require('../config'); // get config file
 
 
 
@@ -32,35 +27,123 @@ function parseUser(userData) {
 
 
 class UserApi extends DataSource {
+    context = {};
     constructor() {
         super();
-        this.users = [
-            {
-                fullname: 'John',
-                email: 'john@mail.com',
-                password: 'john123',
-                username: 'yoursite.net',
-            }
-        ];
-        this.books = [{ title: "Legend of tomorrow", author: 1 },
-        { title: "Who am I?", author: 2 },
-        { title: "The One", author: 2 }]
 
+    }
 
+    initialize(config) {
+        this.context = config.context;
+        this.userDetails = this.context.user;
+        // console.log(config.context)
+
+    }
+
+    maskUser(user, userDetails) {
+        var userOut = {
+            username: user.username,
+            verified: user.verified,
+            ideas: user.ideas
+        }
+        if(userDetails.auth){
+            userOut.fullname = user.fullname;
+            userOut.liked_ideas = user.liked_ideas;
+            userOut.email = user.email;
+            userOut.comments = user.comments;
+        }
+        return userOut;
     }
 
     async getUserbyUsername(username) {
 
 
-
+        // console.log("this.context", this.context)
+        // if (this.userDetails.auth) {
         var user, response;
         try {
             user = await User.findOne({ username: username });
-            response = user;
+            response = this.maskUser(user, this.userDetails);
         }
         catch (err) {
             console.log("error occurred", err);
             response = {}
+
+        }
+        return response;
+
+
+    }
+
+
+    async getAllUser() {
+
+        console.log("userService Entered");
+
+        var user, response;
+        try {
+            user = await User.find({});
+            response = user;
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = []
+
+        }
+        return response;
+
+    }
+    async getUserbyId(id) {
+
+        console.log("id", id);
+
+        var user, response;
+        try {
+            user = await User.findOne({ _id: id });
+            response = this.maskUser(user, this.userDetails);;
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = {}
+
+        }
+        return response;
+
+    }
+
+
+    async loginUser(userObject) {
+
+
+        var user, response;
+        try {
+            user = await User.findOne({ username: userObject.username });
+            var passwordIsValid = bcrypt.compareSync(userObject.password, user.password);
+            if (!passwordIsValid) {
+                response = {
+                    status: "404",
+                    message: "Wrong Password",
+                }
+            }
+            else {
+                var token = jwt.sign({ id: user._id, username: user.username }, configure.secret, {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+                response = {
+                    status: "200",
+                    message: "Success",
+                    user: parseUser(user),
+                    token
+                }
+            }
+
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = response = {
+                status: "404",
+                message: "Wrong Password"
+            }
 
         }
         return response;
@@ -89,78 +172,6 @@ class UserApi extends DataSource {
 
         }
         console.log(response);
-        return response;
-
-    }
-
-    async getAllUser() {
-
-        console.log("userService Entered");
-
-        var user, response;
-        try {
-            user = await User.find({});
-            response = user;
-        }
-        catch (err) {
-            console.log("error occurred", err);
-            response = []
-
-        }
-        return response;
-
-    }
-    async getUserbyId(id) {
-
-        console.log("id", id);
-
-        var user, response;
-        try {
-            user = await User.findOne({ _id: id });
-            response = user;
-        }
-        catch (err) {
-            console.log("error occurred", err);
-            response = {}
-
-        }
-        return response;
-
-    }
-    async loginUser(userObject) {
-
-
-        var user, response;
-        try {
-            user = await User.findOne({ username: userObject.username });
-            var passwordIsValid = bcrypt.compareSync(userObject.password, user.password);
-            if (!passwordIsValid) {
-                response = {
-                    status: "404",
-                    message: "Wrong Password",
-                }
-            }
-            else {
-                var token = jwt.sign({ id: user._id, username: user.username }, config.secret, {
-                    expiresIn: 86400 // expires in 24 hours
-                });
-                response = {
-                    status: "200",
-                    message: "Success",
-                    user: parseUser(user),
-                    token
-                }
-            }
-
-        }
-        catch (err) {
-            console.log("error occurred", err);
-            response = response = {
-                status: "404",
-                message: "Wrong Password"
-            }
-
-        }
         return response;
 
     }
