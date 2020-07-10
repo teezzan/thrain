@@ -64,7 +64,7 @@ class UserApi extends DataSource {
         var user, response;
         try {
             user = await User.findOne({ username: username });
-            
+
             response = {
                 status: "200",
                 user: this.maskUser(user, this.userDetails)
@@ -134,6 +134,19 @@ class UserApi extends DataSource {
 
     }
 
+    async getUserbyIdGen(id) {
+        var user;
+        try {
+            user = await User.findOne({ _id: id });
+
+        }
+        catch (err) {
+            console.log("error occurred", err.message);
+
+        }
+        return user;
+
+    }
 
 
 

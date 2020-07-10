@@ -18,6 +18,7 @@ const typeDefs = gql`
               comments: [Comment]!
    }
    type Idea { 
+              id: ID!
               title: String!, 
               description:String!, 
               author: User!,

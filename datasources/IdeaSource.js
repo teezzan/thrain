@@ -83,13 +83,28 @@ class IdeaApi extends DataSource {
         return response;
 
     }
+    async getIdeabyIdGen(id) {
+
+        console.log("id", id);
+
+        var idea;
+        try {
+            idea = await Idea.findOne({ _id: id });
+        }
+        catch (err) {
+            console.log("error occurred", err);
+        }
+        return idea;
+
+    }
+    
     async getIdeabytag(tag) {
 
-        console.log("tag", tag);
+        // console.log("tag", tag);
 
         var idea, response;
         try {
-            idea = await Idea.find({ tags: {"$in": tag} });
+            idea = await Idea.find({ tags: { "$in": tag } });
             response = {
                 status: "200",
                 ideas: idea
@@ -113,7 +128,7 @@ class IdeaApi extends DataSource {
         try {
             idea = await Idea.find({}).limit(page);
             // console.log("ideass ", idea);
-            
+
             response = {
                 status: "200",
                 ideas: idea
@@ -127,7 +142,7 @@ class IdeaApi extends DataSource {
             }
 
         }
-        console.log(response);        
+        console.log(response);
         return response;
 
     }
