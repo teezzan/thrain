@@ -42,12 +42,13 @@ class UserApi extends DataSource {
     }
 
     maskUser(user, userDetails) {
+        var date = Date.now() / 1000;
         var userOut = {
             username: user.username,
             ideas: user.ideas,
             fullname: user.fullname,
         }
-        if (userDetails.auth) {
+        if (userDetails.auth && date < userDetails.exp) {
             userOut.verified = user.verified;
             userOut.liked_ideas = user.liked_ideas;
             userOut.email = user.email;
@@ -58,6 +59,7 @@ class UserApi extends DataSource {
 
     async getUserbyUsername(username) {
 
+        // console.log("number 2");
 
         // console.log("this.context", this.context)
         // if (this.userDetails.auth) {
@@ -111,7 +113,7 @@ class UserApi extends DataSource {
     }
     async getUserbyId(id) {
 
-        console.log("id", id);
+        // console.log("id", id);
 
         var user, response;
         try {
@@ -189,7 +191,7 @@ class UserApi extends DataSource {
 
         }
         catch (err) {
-            console.log("error occurred", err);
+            console.log("error occurred", err.message);
             response = response = {
                 status: "404",
                 message: "Wrong Password",
@@ -227,21 +229,7 @@ class UserApi extends DataSource {
 
     }
 
-
-
-
-
-
-
-
-
-
 }
 
 
 module.exports = UserApi;
-
-// return new Promise((resolve) => {
-
-//     
-// }

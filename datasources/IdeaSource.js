@@ -39,7 +39,7 @@ class IdeaApi extends DataSource {
     async checkIdValidity(userDetails) {
         var out = false;
         var date = Date.now() / 1000;
-        if (userDetails.auth && date < userDetails.exp) {
+        if (userDetails.auth /*&& date < userDetails.exp*/) {
             try {
                 var user = await User.findOne({ _id: userDetails.id });
                 // console.log(user);

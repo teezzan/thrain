@@ -40,7 +40,7 @@ class CommentApi extends DataSource {
     async checkIdValidity(userDetails) {
         var out = false;
         var date = Date.now() / 1000;
-        if (userDetails.auth && date < userDetails.exp) {
+        if (userDetails.auth /*&& date < userDetails.exp*/) {
             try {
                 var user = await User.findOne({ _id: userDetails.id });
                 // console.log(user);
@@ -106,9 +106,11 @@ class CommentApi extends DataSource {
         var comments, user;
         try {
             user = await User.findOne({ username: username });
-            console.log("username ", user);
+            console.log("user comments ", user.comments);
 
             comments = await Comment.find({ _id: { $in: user.comments } });
+            console.log(comments);
+            
 
         }
         catch (err) {
@@ -124,7 +126,7 @@ class CommentApi extends DataSource {
 
         var comment, idea, user, response;
         var tee = await this.checkIdValidity(this.userDetails)
-        console.log(tee);
+        // console.log(tee);
         if (tee) {
             console.log("true entered");
 
@@ -133,11 +135,14 @@ class CommentApi extends DataSource {
                     text: userObject.text,
                     author: this.userDetails.id
                 });
-                console.log(comment);
+
+                
 
                 //update user comments
-                user = await User.findOneAndUpdate({ _id: this.userDetails._id }, { $push: { comments: comment._id } }, { new: true });
-
+                // console.log(this.userDetails);
+                user = await User.findOneAndUpdate({ _id: this.userDetails.id }, { $push: { comments: comment._id } }, { new: true });
+                // console.log(user);
+                
                 //find and update idea by id
                 idea = await Idea.findOneAndUpdate({ _id: userObject.idea }, { $push: { comments: comment._id } }, { new: true });
                 response = {
@@ -155,13 +160,52 @@ class CommentApi extends DataSource {
         else {
             response = { status: "401", message: "Unauthorized" };
         }
-        console.log(response);
+        // console.log(response);
         return response;
 
     }
 
 
+    async createReplyComment(userObject) {
 
+
+        var comment, reply, user, response;
+        var tee = await this.checkIdValidity(this.userDetails)
+        console.log(tee);
+        if (tee) {
+            console.log("true entered");
+
+            try {
+                reply = await Comment.create({
+                    text: userObject.text,
+                    author: this.userDetails.id
+                });
+                console.log(comment);
+
+                //update user comments
+                user = await User.findOneAndUpdate({ _id: this.userDetails._id }, { $push: { comments: reply._id } }, { new: true });
+
+                //find and update idea by id
+                comment = await Comment.findOneAndUpdate({ _id: userObject.id }, { $push: { replies: reply._id } }, { new: true });
+                response = {
+                    status: "200",
+                    message: "Comment Reply Created Successfully",
+                    comment: comment
+                }
+            }
+            catch (err) {
+                console.log("error occurred", err);
+                response = { status: "401", message: "Comment  Reply Not Created", error: err.message };
+
+            }
+        }
+        else {
+            response = { status: "401", message: "Unauthorized" };
+        }
+        console.log(response);
+        return response;
+
+    }
 
 
 

@@ -9,7 +9,7 @@ const resolvers = {
             return dataSources.userApi.getUserbyId(id);
         },
         userbyusername(parent, { username }, { dataSources }) {
-            // console.log(user);
+            // console.log("number 1");
             return dataSources.userApi.getUserbyUsername(username);
         },
         ideas(parent, { pages, page }, { dataSources }) {
@@ -60,11 +60,11 @@ const resolvers = {
     },
     Mutation: {
         register: async (_, { email, password, username }, { dataSources }) => {
-            console.log("usernutation");
+            console.log("regiteration");
             return dataSources.userApi.createUser({ email, password, username });
         },
         login: async (_, { password, username }, { dataSources }) => {
-            console.log("usernutation");
+            console.log("Login");
             return dataSources.userApi.loginUser({ password, username });
         },
         createIdea: async (_, { title, description, tags }, { dataSources }) => {
@@ -72,8 +72,12 @@ const resolvers = {
             return dataSources.ideaApi.createIdea({ title, description, tags });
         },
         commentIdea: async (_, { text, idea }, { dataSources }) => {
-            console.log("Idea Creation");
+            console.log("Comment Creation");
             return dataSources.commentApi.createComment({ text, idea });
+        },
+        replyComment: async (_, { text, id }, { dataSources }) => {
+            console.log("Reply Creation");
+            return dataSources.commentApi.createReplyComment({ text, id });
         }
     },
 };
