@@ -28,6 +28,7 @@ const typeDefs = gql`
               comments: [Comment]!
    }
    type Comment { 
+              id: ID!
               text: String!, 
               author: User!,
               timeCreated: String!,
@@ -73,7 +74,7 @@ const typeDefs = gql`
           register(email: String!, password: String!, username: String!): UserUpdateResponse! # login token 
           createIdea(title: String!, description: String!, tags: [String]!): IdeaUpdateResponse!
           deleteIdea(id: ID!): IdeaUpdateResponse!
-          commentIdea(id: ID!, text: String!): IdeaUpdateResponse!
+          commentIdea(idea: ID!, text: String!): IdeaUpdateResponse!
           replyComment(id: ID!, text: String!): CommentUpdateResponse!
 
           

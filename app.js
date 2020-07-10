@@ -4,6 +4,7 @@ const typeDefs = require('./models/Typedefs');
 const resolvers = require('./resolvers');
 const UserApi = require('./datasources/UserSource');
 const IdeaApi = require('./datasources/IdeaSource');
+const CommentApi = require('./datasources/CommentSource');
 var { passport } = require('./services/passport');
 var jwt = require('jsonwebtoken')
 var db = require('./db')
@@ -41,7 +42,8 @@ const server = new ApolloServer({
     typeDefs, resolvers,
     dataSources: () => ({
         userApi: new UserApi(),
-        ideaApi: new IdeaApi()
+        ideaApi: new IdeaApi(),
+        commentApi: new CommentApi()
 
     })
     , context: ({ req }) => (

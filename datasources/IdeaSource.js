@@ -123,6 +123,23 @@ class IdeaApi extends DataSource {
         return idea;
 
     }
+    async getLikedIdeasbyUsernameGen(username) {
+
+
+        var user = await this.getUserbyUsername(username);
+        var id = user._id;
+        console.log("id", id);
+        var idea;
+        try {
+            idea = await Idea.find({ _id: {$in: user.liked_ideas} });
+        }
+        catch (err) {
+            console.log("error occurred", err);
+        }
+        console.log("idea", idea);
+        return idea;
+
+    }
     async getIdeabytag(tag) {
 
         // console.log("tag", tag);
