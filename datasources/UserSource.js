@@ -44,11 +44,11 @@ class UserApi extends DataSource {
     maskUser(user, userDetails) {
         var userOut = {
             username: user.username,
-            verified: user.verified,
-            ideas: user.ideas
+            ideas: user.ideas,
+            fullname: user.fullname,
         }
         if (userDetails.auth) {
-            userOut.fullname = user.fullname;
+            userOut.verified = user.verified;
             userOut.liked_ideas = user.liked_ideas;
             userOut.email = user.email;
             userOut.comments = user.comments;
@@ -136,15 +136,23 @@ class UserApi extends DataSource {
 
     async getUserbyIdGen(id) {
         var user;
+        var userOut
         try {
             user = await User.findOne({ _id: id });
-
+            userOut = {
+                username: user.username,
+                fullname: user.fullname,
+                // ideas: user.ideas,
+                // comments: user.comments
+            }
         }
         catch (err) {
             console.log("error occurred", err.message);
 
         }
-        return user;
+
+
+        return userOut;
 
     }
 

@@ -22,17 +22,17 @@ const resolvers = {
             return dataSources.ideaApi.getIdeabytag(tag);
         }
     },
-    // Book: {
-    //     author(parent, args, context) {
-    //         // console.log(parent);
-    //         console.log(context)
-    //         // console.log(args)
-    //         return {
-    //             name: author[parent.author].name,
-    //             age: author[parent.author].age,
-    //         };
-    //     }
-    // },
+    Idea: {
+        author(parent, args, { dataSources }) {
+            console.log(parent);
+            // console.log(context)
+            return dataSources.userApi.getUserbyIdGen(parent.author);
+            // return {
+            //     name: author[parent.author].name,
+            //     age: author[parent.author].age,
+            // };
+        }
+    },
     Mutation: {
         register: async (_, { email, password, username }, { dataSources }) => {
             console.log("usernutation");
