@@ -7,6 +7,8 @@ const typeDefs = gql`
                 ideas(pages: Int!, page: Int! ): IdeaArrayUpdateResponse! 
                 ideasbytag(tag: [String]!) : IdeaArrayUpdateResponse!
                 ideasbyid(id: ID!) : IdeaUpdateResponse!
+                #get messages
+                #me
                 }
   type User { 
               fullname: String, 
@@ -76,7 +78,7 @@ const typeDefs = gql`
           deleteIdea(id: ID!): IdeaUpdateResponse!
           commentIdea(idea: ID!, text: String!): IdeaUpdateResponse!
           replyComment(id: ID!, text: String!): CommentUpdateResponse!
-
+          #edit user details
           
   }
 `;
