@@ -119,7 +119,7 @@ class IdeaApi extends DataSource {
         catch (err) {
             console.log("error occurred", err);
         }
-        console.log("idea", idea);
+        // console.log("idea", idea);
         return idea;
 
     }
@@ -128,7 +128,7 @@ class IdeaApi extends DataSource {
 
         var user = await this.getUserbyUsername(username);
         var id = user._id;
-        console.log("id", id);
+        // console.log("id", id);
         var idea;
         try {
             idea = await Idea.find({ _id: {$in: user.liked_ideas} });
@@ -136,7 +136,7 @@ class IdeaApi extends DataSource {
         catch (err) {
             console.log("error occurred", err);
         }
-        console.log("idea", idea);
+        // console.log("idea", idea);
         return idea;
 
     }

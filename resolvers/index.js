@@ -41,6 +41,11 @@ const resolvers = {
             // console.log(parent);
 
             return dataSources.ideaApi.getLikedIdeasbyUsernameGen(parent.username);
+        },
+        comments(parent, args, { dataSources }) {
+            // console.log("pareeenting", parent);
+            return dataSources.commentApi.getCommentsbyUsernameGen(parent.username);
+            // return []
         }
     },
     Mutation: {

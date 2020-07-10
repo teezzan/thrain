@@ -59,16 +59,6 @@ class CommentApi extends DataSource {
         return out
 
     }
-    async getUserbyUsername(username) {
-        try {
-            var user = await User.findOne({ username: username });
-        }
-        catch (err) {
-            console.log("err", err.message);
-
-        }
-        return user;
-    }
 
     async getCommentbyId(id) {
 
@@ -100,7 +90,7 @@ class CommentApi extends DataSource {
         var comments, idea;
         try {
             idea = await Idea.findOne({ _id: id });
-            comments = await Comment.find({ _id: {$in: idea.comments} });
+            comments = await Comment.find({ _id: { $in: idea.comments } });
 
         }
         catch (err) {
@@ -109,28 +99,30 @@ class CommentApi extends DataSource {
         return comments;
 
     }
-    async getIdeasbyUsernameGen(username) {
+    async getCommentsbyUsernameGen(username) {
 
+        // console.log("username", username);
 
-        var user = await this.getUserbyUsername(username);
-        var id = user._id;
-        console.log("id", id);
-        var idea;
+        var comments, user;
         try {
-            idea = await Idea.find({ author: id });
+            user = await User.findOne({ username: username });
+            console.log("username ", user);
+
+            comments = await Comment.find({ _id: { $in: user.comments } });
+
         }
         catch (err) {
             console.log("error occurred", err);
         }
-        console.log("idea", idea);
-        return idea;
+        return comments;
 
     }
+
 
     async createComment(userObject) {
 
 
-        var comment, idea, response;
+        var comment, idea, user, response;
         var tee = await this.checkIdValidity(this.userDetails)
         console.log(tee);
         if (tee) {
@@ -142,9 +134,12 @@ class CommentApi extends DataSource {
                     author: this.userDetails.id
                 });
                 console.log(comment);
-                
+
+                //update user comments
+                user = await User.findOneAndUpdate({ _id: this.userDetails._id }, { $push: { comments: comment._id } }, { new: true });
+
                 //find and update idea by id
-                idea = await Idea.findOneAndUpdate({_id: userObject.idea}, { $push: { comments: comment._id } }, {new: true});
+                idea = await Idea.findOneAndUpdate({ _id: userObject.idea }, { $push: { comments: comment._id } }, { new: true });
                 response = {
                     status: "200",
                     message: "Comment Created Successfully",
