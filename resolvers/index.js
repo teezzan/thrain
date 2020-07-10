@@ -26,9 +26,9 @@ const resolvers = {
         author(parent, args, { dataSources }) {
             return dataSources.userApi.getUserbyIdGen(parent.author);
         },
-        comments(parent, args, { dataSources }) {
-            // console.log("pareeenting", parent);
-            return dataSources.commentApi.getCommentsbyIdGen(parent._id);
+        comments(parent, {page, pages}, { dataSources }) {
+            // console.log("pareeenting", args);
+            return dataSources.commentApi.getCommentsbyIdGen(parent._id, page, pages);
         },
     },
     User: {
@@ -47,6 +47,16 @@ const resolvers = {
             return dataSources.commentApi.getCommentsbyUsernameGen(parent.username);
             // return []
         }
+    },
+    Comment: {
+        author(parent, args, { dataSources }) {
+            return dataSources.userApi.getUserbyIdGen(parent.author);
+        },
+        replies(parent, args, { dataSources }) {
+            console.log("pareeenting", parent);
+            return [];
+            // return dataSources.commentApi.getCommentsbyIdGen(parent._id);
+        },
     },
     Mutation: {
         register: async (_, { email, password, username }, { dataSources }) => {

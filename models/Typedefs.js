@@ -25,7 +25,7 @@ const typeDefs = gql`
               timeCreated: String!,
               tags: [String]!,
               likes: Int!,
-              comments: [Comment]!
+              comments(pages: Int!, page: Int! ): [Comment]!
    }
    type Comment { 
               id: ID!

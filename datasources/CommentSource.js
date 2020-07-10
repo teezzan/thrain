@@ -83,14 +83,14 @@ class CommentApi extends DataSource {
         return response;
 
     }
-    async getCommentsbyIdGen(id) {
+    async getCommentsbyIdGen(id, page, pages) {
 
         console.log("id", id);
 
         var comments, idea;
         try {
             idea = await Idea.findOne({ _id: id });
-            comments = await Comment.find({ _id: { $in: idea.comments } });
+            comments = await Comment.find({ _id: { $in: idea.comments } }).limit(page);
 
         }
         catch (err) {
