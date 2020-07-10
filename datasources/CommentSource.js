@@ -99,6 +99,22 @@ class CommentApi extends DataSource {
         return comments;
 
     }
+    async getRepliesbyIdGen(id, page, pages) {
+
+        console.log("id", id);
+
+        var comments, pcomment;
+        try {
+            pcomment = await Comment.findOne({ _id: id });
+            comments = await Comment.find({ _id: { $in: pcomment.replies } }).limit(page);
+
+        }
+        catch (err) {
+            console.log("error occurred", err);
+        }
+        return comments;
+
+    }
     async getCommentsbyUsernameGen(username) {
 
         // console.log("username", username);
@@ -110,7 +126,7 @@ class CommentApi extends DataSource {
 
             comments = await Comment.find({ _id: { $in: user.comments } });
             console.log(comments);
-            
+
 
         }
         catch (err) {
@@ -136,13 +152,13 @@ class CommentApi extends DataSource {
                     author: this.userDetails.id
                 });
 
-                
+
 
                 //update user comments
                 // console.log(this.userDetails);
                 user = await User.findOneAndUpdate({ _id: this.userDetails.id }, { $push: { comments: comment._id } }, { new: true });
                 // console.log(user);
-                
+
                 //find and update idea by id
                 idea = await Idea.findOneAndUpdate({ _id: userObject.idea }, { $push: { comments: comment._id } }, { new: true });
                 response = {
@@ -171,7 +187,7 @@ class CommentApi extends DataSource {
 
         var comment, reply, user, response;
         var tee = await this.checkIdValidity(this.userDetails)
-        console.log(tee);
+        // console.log(tee);
         if (tee) {
             console.log("true entered");
 
@@ -180,11 +196,11 @@ class CommentApi extends DataSource {
                     text: userObject.text,
                     author: this.userDetails.id
                 });
-                console.log(comment);
+                // console.log("reply  => ",reply);
 
                 //update user comments
-                user = await User.findOneAndUpdate({ _id: this.userDetails._id }, { $push: { comments: reply._id } }, { new: true });
-
+                user = await User.findOneAndUpdate({ _id: this.userDetails.id }, { $push: { comments: reply._id } }, { new: true });
+                // console.log("user  => ", user);
                 //find and update idea by id
                 comment = await Comment.findOneAndUpdate({ _id: userObject.id }, { $push: { replies: reply._id } }, { new: true });
                 response = {
@@ -192,6 +208,7 @@ class CommentApi extends DataSource {
                     message: "Comment Reply Created Successfully",
                     comment: comment
                 }
+                // console.log("comment  => ", comment);
             }
             catch (err) {
                 console.log("error occurred", err);
@@ -202,7 +219,7 @@ class CommentApi extends DataSource {
         else {
             response = { status: "401", message: "Unauthorized" };
         }
-        console.log(response);
+        // console.log(response);
         return response;
 
     }

@@ -52,10 +52,9 @@ const resolvers = {
         author(parent, args, { dataSources }) {
             return dataSources.userApi.getUserbyIdGen(parent.author);
         },
-        replies(parent, args, { dataSources }) {
-            console.log("pareeenting", parent);
-            return [];
-            // return dataSources.commentApi.getCommentsbyIdGen(parent._id);
+        replies(parent, {page, pages}, { dataSources }) {
+            // console.log("pareeenting", parent);
+            return dataSources.commentApi.getRepliesbyIdGen(parent._id, page, pages);
         },
     },
     Mutation: {
