@@ -15,7 +15,7 @@ const typeDefs = gql`
               verified: Boolean!,
               ideas: [Idea]!,
               liked_ideas: [Idea],
-              comments: [Comment]!
+              comments(pages: Int, page: Int ): [Comment]!
    }
    type Idea { 
               id: ID!
@@ -25,7 +25,7 @@ const typeDefs = gql`
               timeCreated: String!,
               tags: [String]!,
               likes: Int!,
-              comments(pages: Int!, page: Int! ): [Comment]!
+              comments(pages: Int, page: Int ): [Comment]!
    }
    type Comment { 
               id: ID!
@@ -33,7 +33,7 @@ const typeDefs = gql`
               author: User!,
               timeCreated: String!,
               likes: Int!,
-              replies: [Comment]!
+              replies(pages: Int!, page: Int! ): [Comment]!
    
    }
    type UserUpdateResponse {

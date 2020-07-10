@@ -42,9 +42,9 @@ const resolvers = {
 
             return dataSources.ideaApi.getLikedIdeasbyUsernameGen(parent.username);
         },
-        comments(parent, args, { dataSources }) {
+        comments(parent, {page, pages}, { dataSources }) {
             // console.log("pareeenting", parent);
-            return dataSources.commentApi.getCommentsbyUsernameGen(parent.username);
+            return dataSources.commentApi.getCommentsbyUsernameGen(parent.username, page, pages);
             // return []
         }
     },
@@ -53,7 +53,6 @@ const resolvers = {
             return dataSources.userApi.getUserbyIdGen(parent.author);
         },
         replies(parent, {page, pages}, { dataSources }) {
-            // console.log("pareeenting", parent);
             return dataSources.commentApi.getRepliesbyIdGen(parent._id, page, pages);
         },
     },

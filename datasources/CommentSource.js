@@ -85,7 +85,7 @@ class CommentApi extends DataSource {
     }
     async getCommentsbyIdGen(id, page, pages) {
 
-        console.log("id", id);
+        // console.log("id", id);
 
         var comments, idea;
         try {
@@ -101,7 +101,7 @@ class CommentApi extends DataSource {
     }
     async getRepliesbyIdGen(id, page, pages) {
 
-        console.log("id", id);
+        // console.log("id", id);
 
         var comments, pcomment;
         try {
@@ -115,17 +115,14 @@ class CommentApi extends DataSource {
         return comments;
 
     }
-    async getCommentsbyUsernameGen(username) {
-
-        // console.log("username", username);
+    async getCommentsbyUsernameGen(username, page, pages) {
 
         var comments, user;
         try {
             user = await User.findOne({ username: username });
-            console.log("user comments ", user.comments);
 
-            comments = await Comment.find({ _id: { $in: user.comments } });
-            console.log(comments);
+            comments = await Comment.find({ _id: { $in: user.comments } }).limit(page);
+
 
 
         }
