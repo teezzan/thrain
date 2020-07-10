@@ -5,7 +5,7 @@ const typeDefs = gql`
                 userbyid(id: ID!): UserUpdateResponse! 
                 userbyusername(username: String!): UserUpdateResponse! 
                 ideas(pages: Int!, page: Int! ): IdeaArrayUpdateResponse! 
-                ideasbytag(tag: String!) : IdeaArrayUpdateResponse!
+                ideasbytag(tag: [String]!) : IdeaArrayUpdateResponse!
                 ideasbyid(id: ID!) : IdeaUpdateResponse!
                 }
   type User { 

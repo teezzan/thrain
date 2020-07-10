@@ -83,7 +83,29 @@ class IdeaApi extends DataSource {
         return response;
 
     }
+    async getIdeabytag(tag) {
 
+        console.log("tag", tag);
+
+        var idea, response;
+        try {
+            idea = await Idea.find({ tags: {"$in": tag} });
+            response = {
+                status: "200",
+                ideas: idea
+            }
+        }
+        catch (err) {
+            console.log("error occurred", err);
+            response = {
+                status: "401",
+                error: "Internal Error"
+            }
+
+        }
+        return response;
+
+    }
     async getAllIdea(page, pages) {
         // console.log(page);
 

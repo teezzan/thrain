@@ -2,21 +2,24 @@
 
 const resolvers = {
     Query: {
-        user(parent, args, { dataSources}) {
+        user(parent, args, { dataSources }) {
             return dataSources.userApi.getAllUser();
         },
-        userbyid(parent, {id}, { dataSources}) {
+        userbyid(parent, { id }, { dataSources }) {
             return dataSources.userApi.getUserbyId(id);
         },
-        userbyusername(parent, {username}, { dataSources}) {
+        userbyusername(parent, { username }, { dataSources }) {
             // console.log(user);
             return dataSources.userApi.getUserbyUsername(username);
         },
-        ideas(parent, {pages, page}, { dataSources}) {
+        ideas(parent, { pages, page }, { dataSources }) {
             return dataSources.ideaApi.getAllIdea(page, pages);
         },
-        ideasbyid(parent, {id}, { dataSources, user }) {
+        ideasbyid(parent, { id }, { dataSources }) {
             return dataSources.ideaApi.getIdeabyId(id);
+        },
+        ideasbytag(parent, { tag }, { dataSources }) {
+            return dataSources.ideaApi.getIdeabytag(tag);
         }
     },
     // Book: {
