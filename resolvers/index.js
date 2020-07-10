@@ -24,13 +24,14 @@ const resolvers = {
     },
     Idea: {
         author(parent, args, { dataSources }) {
-            console.log(parent);
-            // console.log(context)
             return dataSources.userApi.getUserbyIdGen(parent.author);
-            // return {
-            //     name: author[parent.author].name,
-            //     age: author[parent.author].age,
-            // };
+        }
+    },
+    User: {
+        ideas(parent, args, { dataSources }) {
+            // console.log(parent);
+
+            return dataSources.ideaApi.getIdeasbyUsernameGen(parent.username);
         }
     },
     Mutation: {

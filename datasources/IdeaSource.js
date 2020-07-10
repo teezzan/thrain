@@ -58,7 +58,16 @@ class IdeaApi extends DataSource {
         return out
 
     }
+    async getUserbyUsername(username) {
+        try {
+            var user = await User.findOne({ username: username });
+        }
+        catch (err) {
+            console.log("err", err.message);
 
+        }
+        return user;
+    }
 
     async getIdeabyId(id) {
 
@@ -97,7 +106,23 @@ class IdeaApi extends DataSource {
         return idea;
 
     }
-    
+    async getIdeasbyUsernameGen(username) {
+
+
+        var user = await this.getUserbyUsername(username);
+        var id = user._id;
+        console.log("id", id);
+        var idea;
+        try {
+            idea = await Idea.find({ author: id });
+        }
+        catch (err) {
+            console.log("error occurred", err);
+        }
+        console.log("idea", idea);
+        return idea;
+
+    }
     async getIdeabytag(tag) {
 
         // console.log("tag", tag);
