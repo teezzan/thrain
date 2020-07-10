@@ -33,7 +33,7 @@ const typeDefs = gql`
               author: User!,
               timeCreated: String!,
               likes: Int!,
-              replies(pages: Int!, page: Int! ): [Comment]!
+              replies(pages: Int, page: Int ): [Comment]!
    
    }
    type UserUpdateResponse {

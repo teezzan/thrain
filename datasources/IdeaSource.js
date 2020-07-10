@@ -39,7 +39,7 @@ class IdeaApi extends DataSource {
     async checkIdValidity(userDetails) {
         var out = false;
         var date = Date.now() / 1000;
-        if (userDetails.auth /*&& date < userDetails.exp*/) {
+        if (userDetails.auth && date < userDetails.exp) {
             try {
                 var user = await User.findOne({ _id: userDetails.id });
                 // console.log(user);
@@ -208,7 +208,7 @@ class IdeaApi extends DataSource {
                 });
                 response = {
                     status: "200",
-                    message: "User Created Successfully",
+                    message: "IDEA Created Successfully",
                     idea: idea
                 }
             }
@@ -221,7 +221,7 @@ class IdeaApi extends DataSource {
         else {
             response = { status: "401", message: "Unauthorized" };
         }
-        console.log(response);
+        // console.log(response);
         return response;
 
     }
