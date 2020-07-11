@@ -2,7 +2,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./models/Typedefs');
 const resolvers = require('./resolvers');
-const UserApi = require('./datasources/UserSource');
+const { UserApi, checkUsername } = require('./datasources/UserSource');
 const IdeaApi = require('./datasources/IdeaSource');
 const CommentApi = require('./datasources/CommentSource');
 var { passport } = require('./services/passport');
@@ -22,27 +22,20 @@ app.use('/graphql', (req, res, next) => {
             //check expiry
             user.auth = true;
             req.user = { user };
-            // console.log(user);
-            // console.log("user", user);
-            // console.log("info", info);
-            // console.log("err", err);
         }
         else {
-            var user={auth : false};
+            var user = { auth: false };
             req.user = { user };
 
         }
         // console.log("userauth", user);
         // console.log("info", info);
         // console.log("err", err);
-        
+
         next();
     })(req, res, next)
 })
 
-// app.get('/', (req, res)=>{
-//     res.
-// });
 
 const server = new ApolloServer({
     typeDefs, resolvers,
@@ -61,24 +54,38 @@ const server = new ApolloServer({
 server.applyMiddleware({ app });
 
 
-
-
-// app.listen({ port: 4000 }, () =>
-//     console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
-// );
-
-
-
-// var app = require('express')();
-
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index.html');
+});
+
+
+io.use(function (socket, next) {
+    socket.on('username', (userObject) => {
+        checkUsername(userObject).then((result) => {
+            console.log(result);
+            io.emit('username_response', result)
+        })
+    });
+    next();
+});
+
+io.use(function (socket, next) {
+    //auth
+    var handshakeData = socket.request;
+    // make sure the handshake data looks good as before
+    // if error do this:
+    // next(new Error('not authorized'));
+    // else just call next
+    next();
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+    // console.log('a user connected ', socket.id);
+    socket.on('message', (msg) => {
+        console.log('message: ' + msg);
+    });
 });
 
 http.listen(4000, () => {
-  console.log('listening on *:4000');
+    console.log('listening on *:4000');
 });

@@ -25,7 +25,28 @@ function parseUser(userData) {
     return user;
 }
 
+async function checkUsername(userObject) {
+    var response;
+    return new Promise(async(resolve, reject) => {
 
+        try {
+            var user = await User.findOne({ username: userObject.username });
+
+            response = {
+                username: userObject.username,
+                available: !!!user
+            }
+
+        }
+        catch (err) {
+            console.log("error occurred", err.message);
+            response = {
+                error: err.message
+            }
+        }
+        resolve(response)
+    })
+}
 
 class UserApi extends DataSource {
     context = {};
@@ -232,4 +253,4 @@ class UserApi extends DataSource {
 }
 
 
-module.exports = UserApi;
+module.exports = { UserApi, checkUsername }
