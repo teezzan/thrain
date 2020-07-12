@@ -13,7 +13,7 @@ var db = require('./db')
 const app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-
+const nsp = io.of('/namespace');
 app.use(express.static('public'))
 app.use('/graphql', (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
@@ -59,19 +59,14 @@ app.get('/', (req, res) => {
 });
 
 
-io.use(function (socket, next) {
-    socket.on('username', (userObject) => {
-        checkUsername(userObject).then((result) => {
-            console.log(result);
-            io.emit('username_response', result)
-        })
-    });
-    next();
-});
+
 
 io.use(function (socket, next) {
-    //auth
+    //auth router 
+
     var handshakeData = socket.request;
+    // console.log(handshakeData);
+
     // make sure the handshake data looks good as before
     // if error do this:
     // next(new Error('not authorized'));
@@ -81,8 +76,19 @@ io.use(function (socket, next) {
 
 io.on('connection', (socket) => {
     // console.log('a user connected ', socket.id);
-    socket.on('message', (msg) => {
-        console.log('message: ' + msg);
+    // socket.on('message', (msg) => {
+    //     console.log('message: ' + msg);
+    //     io.to(socket.id).emit('username_response', msg);
+
+    // });
+});
+
+nsp.on('connection', function (socket) {
+    socket.on('username', (userObject) => {
+        checkUsername(userObject, socket.id, (err, result) => {
+            console.log("result");
+            nsp.to(result.receiverId).emit('username', result.response);
+        })
     });
 });
 

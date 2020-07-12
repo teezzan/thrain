@@ -25,9 +25,11 @@ function parseUser(userData) {
     return user;
 }
 
-async function checkUsername(userObject) {
+async function checkUsername(userObject,id, callback) {
     var response;
-    return new Promise(async(resolve, reject) => {
+    // console.log(id);
+    
+   
 
         try {
             var user = await User.findOne({ username: userObject.username });
@@ -44,8 +46,8 @@ async function checkUsername(userObject) {
                 error: err.message
             }
         }
-        resolve(response)
-    })
+        callback(null, {response,receiverId:id});
+   
 }
 
 class UserApi extends DataSource {
