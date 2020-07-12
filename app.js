@@ -62,9 +62,15 @@ app.get('/', (req, res) => {
 
 
 io.use(function (socket, next) {
+    socket.on('username', (userObject) => {
+        checkUsername(userObject, socket.id, (err, result) => {
+            console.log("result");
+            io.to(result.receiverId).emit('username', result.response);
+        })
+    });
     //auth router 
-
-    var handshakeData = socket.request;
+    // console.log("tee");
+    // var handshakeData = socket.request;
     // console.log(handshakeData);
 
     // make sure the handshake data looks good as before
@@ -75,12 +81,13 @@ io.use(function (socket, next) {
 });
 
 io.on('connection', (socket) => {
-    // console.log('a user connected ', socket.id);
-    // socket.on('message', (msg) => {
-    //     console.log('message: ' + msg);
-    //     io.to(socket.id).emit('username_response', msg);
+    console.log('a user connected ', socket.id);
+    if(true){
+    socket.on('message', (msg) => {
+        console.log('message: ' + msg);
+        io.to(socket.id).emit('username_response', msg);
 
-    // });
+    });}
 });
 
 nsp.on('connection', function (socket) {
