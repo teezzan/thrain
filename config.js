@@ -1,3 +1,4 @@
 module.exports = {
-  'secret': 'supersecret'
+  'secret': 'supersecret',
+  "server": 1
 };

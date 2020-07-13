@@ -5,6 +5,7 @@ var mongoose = require("mongoose");
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var configure = require('../config'); // get config file
+var Utils = require("../models/Utils");
 
 
 
@@ -25,30 +26,62 @@ function parseUser(userData) {
     return user;
 }
 
-async function checkUsername(userObject,id, callback) {
+async function checkUsername(userObject, id, callback) {
     var response;
     // console.log(id);
-    
-   
 
-        try {
-            var user = await User.findOne({ username: userObject.username });
 
-            response = {
-                username: userObject.username,
-                available: !!!user
-            }
 
+    try {
+        var user = await User.findOne({ username: userObject.username });
+
+        response = {
+            username: userObject.username,
+            available: !!!user
         }
-        catch (err) {
-            console.log("error occurred", err.message);
-            response = {
-                error: err.message
-            }
+
+    }
+    catch (err) {
+        console.log("error occurred", err.message);
+        response = {
+            error: err.message
         }
-        callback(null, {response,receiverId:id});
-   
+    }
+    callback(null, { response, receiverId: id });
+
 }
+
+async function saveAuthed(userObject, callback) {
+    var response = false;
+    // console.log(id);
+
+
+
+    try {
+        var user = await User.findOne({ username: userObject.username });
+        console.log("user =>",user);
+        if (!!user) {
+            var newauth = {
+                socket_id: userObject.id, username: user.username, id: user._id
+            }
+            var util = await Utils.findOneAndUpdate({ server: configure.server }, { $push: { authed: newauth } }, { new: true });
+            console.log("utils => ",util);
+            if (!!util) {
+                response = true;
+            }
+        }
+
+
+    }
+    catch (err) {
+        console.log("error occurred", err.message);
+        response = false
+
+    }
+    callback(null, { auth: response, receiverId: userObject.id })
+
+}
+
 
 class UserApi extends DataSource {
     context = {};
@@ -255,4 +288,4 @@ class UserApi extends DataSource {
 }
 
 
-module.exports = { UserApi, checkUsername }
+module.exports = { UserApi, checkUsername, saveAuthed }
