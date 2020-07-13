@@ -2,7 +2,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./models/Typedefs');
 const resolvers = require('./resolvers');
-const { UserApi, checkUsername, saveAuthed } = require('./datasources/UserSource');
+const { UserApi, checkUsername, saveAuthed, checkAuthed } = require('./datasources/UserSource');
 const IdeaApi = require('./datasources/IdeaSource');
 const CommentApi = require('./datasources/CommentSource');
 var { passport } = require('./services/passport');
@@ -113,13 +113,18 @@ io.on('connection', (socket, next) => {
 
     socket.on('message', (msg) => {
         console.log("auth", socket.auth);
-        if (socket.id) {
-            console.log('message: ' + msg);
-            io.to(socket.id).emit('username', msg);
-        }
-        else {
-            io.to(socket.id).emit('username', "error");
-        }
+        checkAuthed(socket.id, (err, result) => {
+            console.log("result => ", result);
+            
+            if (result.auth) {
+                console.log('message: ' + msg);
+                io.to(result.receiverId).emit('username', msg);
+            }
+            else {
+                io.to(result.receiverId).emit('username', "Not Authenticated");
+            }
+        })
+
 
     });
 

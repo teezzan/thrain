@@ -17,11 +17,11 @@ mongoose.connect(
         Utils.create({ server: "1", authed: [] }, (err, util) => {
           console.log(err);
 
-          console.log("util", util);
+          // console.log("util", util);
         })
       }
       else {
-        console.log("All done", server);
+        console.log("All done");
       }
 
     })

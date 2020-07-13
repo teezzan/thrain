@@ -59,13 +59,13 @@ async function saveAuthed(userObject, callback) {
 
     try {
         var user = await User.findOne({ username: userObject.username });
-        console.log("user =>",user);
+        console.log("user =>", user);
         if (!!user) {
             var newauth = {
                 socket_id: userObject.id, username: user.username, id: user._id
             }
             var util = await Utils.findOneAndUpdate({ server: configure.server }, { $push: { authed: newauth } }, { new: true });
-            console.log("utils => ",util);
+            // console.log("utils => ", util);
             if (!!util) {
                 response = true;
             }
@@ -81,6 +81,37 @@ async function saveAuthed(userObject, callback) {
     callback(null, { auth: response, receiverId: userObject.id })
 
 }
+
+async function checkAuthed(socket_id, callback) {
+    var response = false;
+    console.log("hererer");
+
+
+
+    try {
+        var util = await Utils.findOne({ server: configure.server });
+        // console.log("user =>", util);
+        if (!!util) {
+            const newauthed = util.authed.filter(c => c.socket_id === socket_id);
+            console.log("new =>", newauthed);
+            
+            if (newauthed.length !== 0) {
+                response = true;
+            }
+        }
+
+
+    }
+    catch (err) {
+        console.log("error occurred", err.message);
+        response = false
+
+    }
+
+    callback(null, { auth: response, receiverId: socket_id });
+
+}
+
 
 
 class UserApi extends DataSource {
@@ -288,4 +319,4 @@ class UserApi extends DataSource {
 }
 
 
-module.exports = { UserApi, checkUsername, saveAuthed }
+module.exports = { UserApi, checkUsername, saveAuthed, checkAuthed }
