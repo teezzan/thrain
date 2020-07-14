@@ -84,6 +84,7 @@ async function saveAuthed(userObject, callback) {
 
 async function checkAuthed(socket_id, callback) {
     var response = false;
+    var newauthed = [];
     // console.log("hererer");
 
 
@@ -92,7 +93,7 @@ async function checkAuthed(socket_id, callback) {
         var util = await Utils.findOne({ server: configure.server });
         // console.log("user =>", util);
         if (!!util) {
-            const newauthed = util.authed.filter(c => c.socket_id === socket_id);
+            newauthed = util.authed.filter(c => c.socket_id === socket_id);
             console.log("new =>", newauthed);
 
             if (newauthed.length !== 0) {
@@ -107,8 +108,14 @@ async function checkAuthed(socket_id, callback) {
         response = false
 
     }
+    if (response) {
+        callback(null, { auth: response, receiverId: socket_id, _id: newauthed[0].id });
+    }
+    else {
+        callback(null, { auth: response, receiverId: socket_id, _id: null });
+    }
 
-    callback(null, { auth: response, receiverId: socket_id });
+
 
 }
 
@@ -268,10 +275,6 @@ class UserApi extends DataSource {
         return userOut;
 
     }
-
-
-
-
 
 
 

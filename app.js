@@ -5,6 +5,7 @@ const resolvers = require('./resolvers');
 const { UserApi, checkUsername, saveAuthed, checkAuthed, popAuthed } = require('./datasources/UserSource');
 const IdeaApi = require('./datasources/IdeaSource');
 const CommentApi = require('./datasources/CommentSource');
+const {sendMessage} = require('./datasources/MessageSource');
 var { passport } = require('./services/passport');
 var jwt = require('jsonwebtoken')
 var db = require('./db')
@@ -124,11 +125,42 @@ io.on('connection', (socket, next) => {
                 io.to(result.receiverId).emit('authorization', "Not Authenticated");
             }
 
+        })
+
+
+    });
+
+
+    socket.on('send_message', (msg) => {
+        checkAuthed(socket.id, (err, result) => {
+            console.log("result => ", result);
+
+            if (result.auth) {
+                //create new message and save
+                //check if receiver is online and send if online
+                //send confirmation to sender
+                msg.from = result._id;
+                sendMessage(msg, socket.id, (err, result) =>{
+                    if(result.sent){
+                        io.to(result.receiverId).emit('username', "Successful");
+                    }
+                    else{
+                        io.to(result.receiverId).emit('username', "UnSuccessful");
+                    }
+                });
+                console.log('message: ' + msg);
+                
+            }
+            else {
+                io.to(result.receiverId).emit('authorization', "Not Authenticated");
+            }
 
         })
 
 
     });
+
+
     socket.on('disconnect', () => {
         console.log('a user disconnected ', socket.id);
         popAuthed(socket.id, (err, result) => {
