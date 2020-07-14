@@ -53,13 +53,16 @@
       var socket = io();
       // var socket = io("/namespace");
       function send() {
-        socket.emit("username", {username: "teezzanHAssanYusuf"});
+        socket.emit("username", { username: "teezzanHAssanYusuf" });
         $("#m").val("");
         return false;
       }
 
-      socket.on("username", function (msg) {;
+      socket.on("username", function (msg) {
         console.log(msg);
+      });
+      socket.on("authorization", function (msg) {
+        console.log("authorization =>", msg);
       });
     </script>
   </body>

@@ -84,7 +84,7 @@ async function saveAuthed(userObject, callback) {
 
 async function checkAuthed(socket_id, callback) {
     var response = false;
-    console.log("hererer");
+    // console.log("hererer");
 
 
 
@@ -94,7 +94,7 @@ async function checkAuthed(socket_id, callback) {
         if (!!util) {
             const newauthed = util.authed.filter(c => c.socket_id === socket_id);
             console.log("new =>", newauthed);
-            
+
             if (newauthed.length !== 0) {
                 response = true;
             }
@@ -112,6 +112,30 @@ async function checkAuthed(socket_id, callback) {
 
 }
 
+async function popAuthed(socket_id, callback) {
+    var response = false;
+    console.log("popAuthed");
+
+
+
+    try {
+
+        var utils = await Utils.findOneAndUpdate({ server: configure.server }, { $pull: { authed: { socket_id: socket_id } } }, { new: true });
+        if (!!utils) { response = true }
+        // console.log("utils => ", utils);
+
+
+
+    }
+    catch (err) {
+        console.log("error occurred", err.message);
+        response = false
+
+    }
+
+    callback(null, { auth: response, receiverId: socket_id });
+
+}
 
 
 class UserApi extends DataSource {
@@ -319,4 +343,4 @@ class UserApi extends DataSource {
 }
 
 
-module.exports = { UserApi, checkUsername, saveAuthed, checkAuthed }
+module.exports = { UserApi, checkUsername, saveAuthed, checkAuthed, popAuthed }

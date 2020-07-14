@@ -2,7 +2,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./models/Typedefs');
 const resolvers = require('./resolvers');
-const { UserApi, checkUsername, saveAuthed, checkAuthed } = require('./datasources/UserSource');
+const { UserApi, checkUsername, saveAuthed, checkAuthed, popAuthed } = require('./datasources/UserSource');
 const IdeaApi = require('./datasources/IdeaSource');
 const CommentApi = require('./datasources/CommentSource');
 var { passport } = require('./services/passport');
@@ -79,15 +79,15 @@ io.use(
             jwt.verify(token, configure.secret, function (err, decoded) {
                 console.log(decoded);
                 if (err) {
-                    io.to(socket.id).emit('username', "error");
+                    io.to(socket.id).emit('authorization', "error");
                 }
                 else if (date < decoded.exp) {
 
                     saveAuthed({ username: decoded.username, id: socket.id }, (err, result) => {
                         if (result.auth) {
-                            io.to(result.receiverId).emit('username', "Authenticated");
+                            io.to(result.receiverId).emit('authorization', "Authenticated");
                         } else {
-                            io.to(result.receiverId).emit('username', "server error");
+                            io.to(result.receiverId).emit('authorization', "server error");
                         }
                     })
 
@@ -115,16 +115,25 @@ io.on('connection', (socket, next) => {
         console.log("auth", socket.auth);
         checkAuthed(socket.id, (err, result) => {
             console.log("result => ", result);
-            
+
             if (result.auth) {
                 console.log('message: ' + msg);
                 io.to(result.receiverId).emit('username', msg);
             }
             else {
-                io.to(result.receiverId).emit('username', "Not Authenticated");
+                io.to(result.receiverId).emit('authorization', "Not Authenticated");
             }
+
+
         })
 
+
+    });
+    socket.on('disconnect', () => {
+        console.log('a user disconnected ', socket.id);
+        popAuthed(socket.id, (err, result) => {
+            console.log("result => ", result);
+        })
 
     });
 
