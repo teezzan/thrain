@@ -59,7 +59,7 @@ async function saveAuthed(userObject, callback) {
 
     try {
         var user = await User.findOne({ username: userObject.username });
-        console.log("user =>", user);
+        // console.log("user =>", user);
         if (!!user) {
             var newauth = {
                 socket_id: userObject.id, username: user.username, id: user._id
