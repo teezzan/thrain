@@ -31,6 +31,8 @@ function parseUser(userData) {
 
 async function sendMessage(msgData, id, callback) {
     var response = false;
+    var recepOnline = false;
+    var recepSocketId = null;
     try {
         user = await User.findOne({ username: msgData.to });
         if (!!user) {
@@ -44,6 +46,19 @@ async function sendMessage(msgData, id, callback) {
             if (!!message) {
                 response = true;
                 //check if the reciever is online and deliever
+                var util = await Utils.findOne({ server: configure.server });
+                // console.log("user => here");
+                if (!!util) {
+                    // console.log("util =>", util);
+                    var newauthed = util.authed.filter(c => c.id == user._id);
+                    // console.log("newaythed =>", newauthed);
+
+                    if (newauthed.length !== 0) {
+                        recepOnline = true;
+                        recepSocketId = newauthed[0].socket_id;
+                    }
+                }
+
             }
         }
 
@@ -51,7 +66,7 @@ async function sendMessage(msgData, id, callback) {
         console.log("error occurred", err.message);
         response = false;
     }
-    callback(null, { sent: response, receiverId: id });
+    callback(null, { sent: response, receiverId: id, recepOnline, recepSocketId, text: msgData.text });
 }
 
 
@@ -152,4 +167,4 @@ class MsgApi extends DataSource {
 }
 
 
-module.exports = {sendMessage};
+module.exports = { sendMessage };

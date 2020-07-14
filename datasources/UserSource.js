@@ -94,7 +94,7 @@ async function checkAuthed(socket_id, callback) {
         // console.log("user =>", util);
         if (!!util) {
             newauthed = util.authed.filter(c => c.socket_id === socket_id);
-            console.log("new =>", newauthed);
+            //console.log("new =>", newauthed);
 
             if (newauthed.length !== 0) {
                 response = true;

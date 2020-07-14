@@ -5,7 +5,7 @@ const resolvers = require('./resolvers');
 const { UserApi, checkUsername, saveAuthed, checkAuthed, popAuthed } = require('./datasources/UserSource');
 const IdeaApi = require('./datasources/IdeaSource');
 const CommentApi = require('./datasources/CommentSource');
-const {sendMessage} = require('./datasources/MessageSource');
+const { sendMessage } = require('./datasources/MessageSource');
 var { passport } = require('./services/passport');
 var jwt = require('jsonwebtoken')
 var db = require('./db')
@@ -132,6 +132,7 @@ io.on('connection', (socket, next) => {
 
 
     socket.on('send_message', (msg) => {
+        console.log("send_message => entered");
         checkAuthed(socket.id, (err, result) => {
             console.log("result => ", result);
 
@@ -140,16 +141,20 @@ io.on('connection', (socket, next) => {
                 //check if receiver is online and send if online
                 //send confirmation to sender
                 msg.from = result._id;
-                sendMessage(msg, socket.id, (err, result) =>{
-                    if(result.sent){
-                        io.to(result.receiverId).emit('username', "Successful");
+                sendMessage(msg, socket.id, (err, result, ) => {
+                    console.log("result => ", result);
+                    if (result.sent) {
+                        io.to(result.receiverId).emit('username', "Successful");//recepOnline, recepSocketId
+                        if (result.recepOnline) {
+                            io.to(result.recepSocketId).emit('username', result.text);
+                        }
                     }
-                    else{
+                    else {
                         io.to(result.receiverId).emit('username', "UnSuccessful");
                     }
                 });
                 console.log('message: ' + msg);
-                
+
             }
             else {
                 io.to(result.receiverId).emit('authorization', "Not Authenticated");

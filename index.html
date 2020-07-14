@@ -57,6 +57,10 @@
         $("#m").val("");
         return false;
       }
+      function sendmessage(text, username) {
+        var pay = { text, to: username };
+        socket.emit("send_message", pay);
+      }
 
       socket.on("username", function (msg) {
         console.log(msg);
