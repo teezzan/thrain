@@ -48,7 +48,8 @@
         aconn = conn;
         console.log("connected from :", conn.peer);
         conn.on("data", function (data) {
-          console.log("Received", data);
+          console.log("Received", data, " from ", conn.peer);
+          aconn = conn;
         });
       });
 
@@ -59,7 +60,8 @@
           // here you have conn.id
           conn.send("hi!");
           conn.on("data", function (data) {
-            console.log("Received", data);
+            console.log("Received", data, " from ", conn.peer);
+            aconn = conn;
           });
         });
       }
