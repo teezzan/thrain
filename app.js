@@ -10,7 +10,7 @@ var { passport } = require('./services/passport');
 var jwt = require('jsonwebtoken')
 var db = require('./db')
 var configure = require('./config'); // get config file
-
+const { ExpressPeerServer } = require('peer');
 
 
 
@@ -56,6 +56,20 @@ const server = new ApolloServer({
 
 
 server.applyMiddleware({ app });
+
+
+const peerServer = ExpressPeerServer(http, {
+    debug: true,
+    path: '/myapp'
+});
+
+peerServer.on('connection', (client) => {
+    console.log(client.id)
+});
+app.use('/peerjs', peerServer);
+
+
+
 
 
 app.get('/', (req, res) => {
