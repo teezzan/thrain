@@ -77,6 +77,10 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/test', (req, res) => {
+    res.status(200).send("great works")
+});
+
 
 
 
