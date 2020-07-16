@@ -17,7 +17,7 @@
       var socket = io();
 
       const peer = new Peer(`${Date.now()}`, {
-        host: "192.168.8.103",
+        host: location.hostname,
         port: 4000,
         path: "/peerjs/myapp",
       });
