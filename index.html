@@ -14,9 +14,13 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
-      var socket = io();
+      function pingHeroku() {
+        peer.socket.send({ type: "ping" });
+        timeoutID = setTimeout(pingHeroku, 20000);
+      }
 
-      const peer = new Peer( {
+      var socket = io();
+      const peer = new Peer({
         host: location.hostname,
         port: 4000,
         path: "/peerjs/myapp",
@@ -105,7 +109,10 @@
 
       peer.on("open", function (id) {
         console.log("My peer ID is: " + id);
-        document.getElementById("idd").innerText = String("My peer ID is: " + id);
+        pingHeroku();
+        document.getElementById("idd").innerText = String(
+          "My peer ID is: " + id
+        );
       });
 
       peer.on("connection", (conn) => {
