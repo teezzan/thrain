@@ -12,7 +12,7 @@ var db = require('./db')
 var configure = require('./config'); // get config file
 const { ExpressPeerServer } = require('peer');
 
-
+var port = process.env.PORT || 4000;
 
 const app = express();
 var http = require('http').createServer(app);
@@ -204,6 +204,6 @@ nsp.on('connection', function (socket) {
     });
 });
 
-http.listen(4000, () => {
+http.listen(port , () => {
     console.log('listening on *:4000');
 });
