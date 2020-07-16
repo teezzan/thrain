@@ -12,14 +12,15 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
       var socket = io();
-      
-      const peer = new Peer( `${Date.now()}`, {
+
+      const peer = new Peer(`${Date.now()}`, {
         host: "localhost",
         port: 4000,
         path: "/peerjs/myapp",
       });
 
-      let con;
+      let conn;
+      var aconn;
 
       function send() {
         socket.emit("username", { username: "teezzanHAssanYusuf" });
@@ -44,19 +45,22 @@
       });
 
       peer.on("connection", (conn) => {
+        aconn = conn;
+        console.log("connected from :", conn.peer);
         conn.on("data", function (data) {
           console.log("Received", data);
-          // console.log("id", conn.id);
-         
         });
-        conn.send("connected oooooo");
       });
+
       function connect(id) {
         conn = peer.connect(id);
         // on open will be launch when you successfully connect to PeerServer
         conn.on("open", function () {
           // here you have conn.id
           conn.send("hi!");
+          conn.on("data", function (data) {
+            console.log("Received", data);
+          });
         });
       }
     </script>
