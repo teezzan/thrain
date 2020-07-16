@@ -60,6 +60,7 @@ server.applyMiddleware({ app });
 
 const peerServer = ExpressPeerServer(http, {
     debug: true,
+    proxied: true,
     path: '/myapp'
 });
 
