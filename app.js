@@ -11,6 +11,7 @@ var jwt = require('jsonwebtoken')
 var db = require('./db')
 var configure = require('./config'); // get config file
 const { ExpressPeerServer } = require('peer');
+var cors = require('cors');
 
 var port = process.env.PORT || 4000;
 
@@ -69,6 +70,7 @@ peerServer.on('connection', (client) => {
 });
 app.use('/peerjs', peerServer);
 
+app.use(cors());
 
 
 
