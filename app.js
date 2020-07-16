@@ -66,7 +66,7 @@ const peerServer = ExpressPeerServer(http, {
 });
 
 peerServer.on('connection', (client) => {
-    console.log(client.id)
+    console.log("peer id => ",client.id)
 });
 app.use('/peerjs', peerServer);
 
