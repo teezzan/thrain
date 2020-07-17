@@ -2,8 +2,8 @@ var mongoose = require("mongoose");
 var Utils = require("./models/Utils");
 var configure = require('./config'); // get config file
 
-mongoose.connect('mongodb+srv://adminlove:t%40ye1234@cluster0-sbitd.mongodb.net/test?retryWrites=true&w=majority', {
-// mongoose.connect("mongodb://localhost:27017/thrsin",{
+// mongoose.connect('mongodb+srv://adminlove:t%40ye1234@cluster0-sbitd.mongodb.net/test?retryWrites=true&w=majority', {
+mongoose.connect("mongodb://localhost:27017/thrsin",{
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },

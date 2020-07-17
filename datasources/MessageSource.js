@@ -66,7 +66,7 @@ async function sendMessage(msgData, id, callback) {
         console.log("error occurred", err.message);
         response = false;
     }
-    callback(null, { sent: response, receiverId: id, recepOnline, recepSocketId, text: msgData.text });
+    callback(null, { sent: response, receiverId: id, recepOnline, recepSocketId, text: msgData.text  });
 }
 
 

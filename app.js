@@ -61,12 +61,12 @@ server.applyMiddleware({ app });
 
 const peerServer = ExpressPeerServer(http, {
     debug: true,
-    proxied: true,
+    // proxied: true,
     path: '/myapp'
 });
 
 peerServer.on('connection', (client) => {
-    console.log("peer id => ",client.id)
+    console.log("peer id => ", client.id)
 });
 app.use('/peerjs', peerServer);
 
@@ -117,15 +117,6 @@ io.use(
             });
 
         });
-        //auth router 
-        // console.log("tee");
-        // var handshakeData = socket.request;
-        // console.log(handshakeData);
-
-        // make sure the handshake data looks good as before
-        // if error do this:
-        // next(new Error('not authorized'));
-        // else just call next
         next();
     });
 
@@ -166,9 +157,11 @@ io.on('connection', (socket, next) => {
                     console.log("result => ", result);
                     if (result.sent) {
                         io.to(result.receiverId).emit('username', "Successful");//recepOnline, recepSocketId
-                        if (result.recepOnline) {
-                            io.to(result.recepSocketId).emit('username', result.text);
-                        }
+                        result.recepOnline && io.to(result.recepSocketId).emit('username', result.text);
+                        // if (result.recepOnline) {
+                        //     console.log("result => RecepOnline is online");
+                            
+                        // }
                     }
                     else {
                         io.to(result.receiverId).emit('username', "UnSuccessful");
@@ -186,6 +179,42 @@ io.on('connection', (socket, next) => {
 
     });
 
+
+    socket.on('make_call', (msg) => {//params of msg {text, to, from} /// needed from clien => {to:recev_username, peerid,  }
+        console.log("make_call => entered");
+        checkAuthed(socket.id, (err, result) => {
+            console.log("result => ", result);
+
+            if (result.auth) {
+
+                //set msg text
+                msg.from = result._id;
+                msg.text = "Call_Notification";
+                sendMessage(msg, socket.id, (err, result, ) => {
+                    console.log("result => ", result);
+
+                    if (result.sent && result.recepOnline) {
+                        // io.to(result.receiverId).emit('username', "Successful");//recepOnline, recepSocketId
+                        console.log("result => Both online");
+                        io.to(result.receiverId).emit('Ringing', msg.to);
+                        io.to(result.recepSocketId).emit('Ringing', { peerid: msg.peerid, username: result.username });
+
+                    }
+                    else {
+                        io.to(result.receiverId).emit('Ringing', "UnSuccessful");
+                    }
+                });
+                // console.log('message: ' + msg);
+
+            }
+            else {
+                io.to(result.receiverId).emit('authorization', "Not Authenticated");
+            }
+
+        })
+
+
+    });
 
     socket.on('disconnect', () => {
         console.log('a user disconnected ', socket.id);
@@ -206,6 +235,6 @@ nsp.on('connection', function (socket) {
     });
 });
 
-http.listen(port , () => {
+http.listen(port, () => {
     console.log('listening on *:4000');
 });
