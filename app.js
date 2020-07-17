@@ -197,7 +197,7 @@ io.on('connection', (socket, next) => {
                         // io.to(result.receiverId).emit('username', "Successful");//recepOnline, recepSocketId
                         console.log("result => Both online");
                         io.to(result.receiverId).emit('Ringing', msg.to);
-                        io.to(result.recepSocketId).emit('Ringing', { peerid: msg.peerid, username: result.username });
+                        io.to(result.recepSocketId).emit('rec', { peerid: msg.peerid, username: result.username });
 
                     }
                     else {

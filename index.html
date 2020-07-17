@@ -107,6 +107,11 @@
         console.log(msg);
       });
 
+      socket.on("rec", function (msg) {
+        console.log("Incoming call");
+        startcall(msg.peerid)
+        // console.log(msg);
+      });
       socket.on("authorization", function (msg) {
         console.log("authorization =>", msg);
       });

@@ -109,10 +109,10 @@ async function checkAuthed(socket_id, callback) {
 
     }
     if (response) {
-        callback(null, { auth: response, receiverId: socket_id, _id: newauthed[0].id });
+        callback(null, { auth: response, receiverId: socket_id, _id: newauthed[0].id, username: newauthed[0].username });
     }
     else {
-        callback(null, { auth: response, receiverId: socket_id, _id: null });
+        callback(null, { auth: response, receiverId: socket_id, _id: null, username: null });
     }
 
 
