@@ -17,16 +17,20 @@ const resolvers = {
         },
         ideasbyid(parent, { id }, { dataSources }) {
             return dataSources.ideaApi.getIdeabyId(id);
-        },
+        },//
         ideasbytag(parent, { tag }, { dataSources }) {
             return dataSources.ideaApi.getIdeabytag(tag);
-        }
+        },
+        messagesbyusername(parent, { username }, { dataSources }) {
+            // console.log("number 1");
+            return dataSources.msgApi.getMsgbyUsername(username);
+        },
     },
     Idea: {
         author(parent, args, { dataSources }) {
             return dataSources.userApi.getUserbyIdGen(parent.author);
         },
-        comments(parent, {page, pages}, { dataSources }) {
+        comments(parent, { page, pages }, { dataSources }) {
             // console.log("pareeenting", args);
             return dataSources.commentApi.getCommentsbyIdGen(parent._id, page, pages);
         },
@@ -42,7 +46,7 @@ const resolvers = {
 
             return dataSources.ideaApi.getLikedIdeasbyUsernameGen(parent.username);
         },
-        comments(parent, {page, pages}, { dataSources }) {
+        comments(parent, { page, pages }, { dataSources }) {
             // console.log("pareeenting", parent);
             return dataSources.commentApi.getCommentsbyUsernameGen(parent.username, page, pages);
             // return []
@@ -52,9 +56,17 @@ const resolvers = {
         author(parent, args, { dataSources }) {
             return dataSources.userApi.getUserbyIdGen(parent.author);
         },
-        replies(parent, {page, pages}, { dataSources }) {
+        replies(parent, { page, pages }, { dataSources }) {
             return dataSources.commentApi.getRepliesbyIdGen(parent._id, page, pages);
         },
+    },
+    Message: {
+        to(parent, args, { dataSources }) {
+            return dataSources.userApi.getUserbyIdGen(parent.to);
+        },
+        from(parent, args, { dataSources }) {
+            return dataSources.userApi.getUserbyIdGen(parent.from);
+        }
     },
     Mutation: {
         register: async (_, { email, password, username }, { dataSources }) => {

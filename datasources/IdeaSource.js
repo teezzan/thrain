@@ -59,8 +59,9 @@ class IdeaApi extends DataSource {
 
     }
     async getUserbyUsername(username) {
+        var user = null; 
         try {
-            var user = await User.findOne({ username: username });
+             user = await User.findOne({ username: username });
         }
         catch (err) {
             console.log("err", err.message);

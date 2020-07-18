@@ -7,6 +7,7 @@ const typeDefs = gql`
                 ideas(pages: Int!, page: Int! ): IdeaArrayUpdateResponse! 
                 ideasbytag(tag: [String]!) : IdeaArrayUpdateResponse!
                 ideasbyid(id: ID!) : IdeaUpdateResponse!
+                messagesbyusername(username: String!) : MessageArrayUpdateResponse!
                 #get messages
                 #me
                 }
@@ -38,6 +39,15 @@ const typeDefs = gql`
               replies(pages: Int, page: Int ): [Comment]!
    
    }
+
+   type Message { 
+              id: ID
+              text: String!, 
+              to: User!,
+              from: User!,
+              timeCreated: String!
+   
+   }
    type UserUpdateResponse {
       status: String!
       message: String
@@ -63,6 +73,12 @@ const typeDefs = gql`
       status: String!
       message: String
       ideas: [Idea]
+      error: String
+    }
+    type MessageArrayUpdateResponse {
+      status: String!
+      message: String
+      messages: [Message]
       error: String
     }
     type CommentUpdateResponse {

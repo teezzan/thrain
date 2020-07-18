@@ -66,7 +66,7 @@ async function sendMessage(msgData, id, callback) {
         console.log("error occurred", err.message);
         response = false;
     }
-    callback(null, { sent: response, receiverId: id, recepOnline, recepSocketId, text: msgData.text  });
+    callback(null, { sent: response, receiverId: id, recepOnline, recepSocketId, text: msgData.text });
 }
 
 
@@ -107,59 +107,46 @@ class MsgApi extends DataSource {
 
     }
 
-    async getCommentbyId(id) {
+    async getMsgbyUsername(username) {
 
-        console.log("id", id);
 
-        var idea, response;
-        try {
-            idea = await Idea.findOne({ _id: id });
-            response = {
-                status: "200",
-                idea: idea
+
+        var msg, response;
+        var tee = await this.checkIdValidity(this.userDetails)//this.userDetails.id
+        console.log(tee);
+        if (tee) {
+            console.log("true entered");
+
+            try {
+                var user = await User.findOne({ username: username });
+                if (!!user) {
+                    var tag = [`${user._id}${this.userDetails.id}`, `${this.userDetails.id}${user._id}`];
+                    msg = await Msg.find({ bid: { "$in": tag } });
+                    // console.log("msg => ", msg);
+                    response = {
+                        status: "200",
+                        messages: msg
+                    }
+                }
+                else {
+                    response = {
+                        status: "404",
+                        message: "user not found"
+                    }
+                }
+            }
+            catch (err) {
+                console.log("error occurred", err);
+                response = { status: "401", message: "Idea Not Created", error: err.message };
+
             }
         }
-        catch (err) {
-            console.log("error occurred", err);
-            response = {
-                status: "401",
-                error: "Internal Error"
-            }
-
+        else {
+            response = { status: "401", message: "Unauthorized" };
         }
+        // console.log(response);
         return response;
 
-    }
-    async getCommentsbyIdGen(id, page, pages) {
-
-        // console.log("id", id);
-
-        var comments, idea;
-        try {
-            idea = await Idea.findOne({ _id: id });
-            comments = await Comment.find({ _id: { $in: idea.comments } }).limit(page);
-
-        }
-        catch (err) {
-            console.log("error occurred", err);
-        }
-        return comments;
-
-    }
-    async getRepliesbyIdGen(id, page, pages) {
-
-        // console.log("id", id);
-
-        var comments, pcomment;
-        try {
-            pcomment = await Comment.findOne({ _id: id });
-            comments = await Comment.find({ _id: { $in: pcomment.replies } }).limit(page);
-
-        }
-        catch (err) {
-            console.log("error occurred", err);
-        }
-        return comments;
 
     }
 
@@ -167,4 +154,4 @@ class MsgApi extends DataSource {
 }
 
 
-module.exports = { sendMessage };
+module.exports = { MsgApi, sendMessage };
