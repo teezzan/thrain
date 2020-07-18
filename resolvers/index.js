@@ -25,6 +25,9 @@ const resolvers = {
             // console.log("number 1");
             return dataSources.msgApi.getMsgbyUsername(username);
         },
+        me(parent, _, { dataSources }) {
+            return dataSources.userApi.me();
+        },
     },
     Idea: {
         author(parent, args, { dataSources }) {

@@ -175,6 +175,28 @@ class UserApi extends DataSource {
         return userOut;
     }
 
+    async checkIdValidity(userDetails) {
+        var out = false;
+        var date = Date.now() / 1000;
+        if (userDetails.auth && date < userDetails.exp) {
+            try {
+                var user = await User.findOne({ _id: userDetails.id });
+                // console.log(user);
+                if (user != null) {
+                    out = true
+                }
+
+            }
+            catch (err) {
+                console.log("err", err.message);
+
+                out = false;
+            }
+
+        }
+        return out
+
+    }
     async getUserbyUsername(username) {
 
         // console.log("number 2");
@@ -276,7 +298,45 @@ class UserApi extends DataSource {
 
     }
 
+    async me() {
 
+        // console.log("id", id);
+
+        var user, response;
+        var tee = await this.checkIdValidity(this.userDetails)
+        // console.log(tee);
+        if (tee) {
+            console.log("true entered");
+
+            try {
+                user = await User.findOne({ _id: this.userDetails.id });
+                if (!!user) {
+                    response = {
+                        status: "200",
+                        user: user
+                    }
+                } else {
+                    response = {
+                        status: "401",
+                        message: "User not found"
+                    }
+                }
+            }
+            catch (err) {
+                console.log("error occurred", err.message);
+                response = {
+                    status: "401",
+                    error: err.message
+                }
+
+            }
+        }
+        else {
+            response = { status: "401", message: "Unauthorized" };
+        }
+        return response;
+
+    }
 
     async loginUser(userObject) {
 
