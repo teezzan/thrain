@@ -53,19 +53,18 @@ async function checkUsername(userObject, id, callback) {
 
 async function saveAuthed(userObject, callback) {
     var response = false;
-    // console.log(id);
 
 
 
     try {
         var user = await User.findOne({ username: userObject.username });
-        // console.log("user =>", user);
+
         if (!!user) {
             var newauth = {
                 socket_id: userObject.id, username: user.username, id: user._id
             }
             var util = await Utils.findOneAndUpdate({ server: configure.server }, { $push: { authed: newauth } }, { new: true });
-            // console.log("utils => ", util);
+
             if (!!util) {
                 response = true;
             }
@@ -85,16 +84,13 @@ async function saveAuthed(userObject, callback) {
 async function checkAuthed(socket_id, callback) {
     var response = false;
     var newauthed = [];
-    // console.log("hererer");
 
 
 
     try {
         var util = await Utils.findOne({ server: configure.server });
-        // console.log("user =>", util);
         if (!!util) {
             newauthed = util.authed.filter(c => c.socket_id === socket_id);
-            //console.log("new =>", newauthed);
 
             if (newauthed.length !== 0) {
                 response = true;
@@ -129,9 +125,6 @@ async function popAuthed(socket_id, callback) {
 
         var utils = await Utils.findOneAndUpdate({ server: configure.server }, { $pull: { authed: { socket_id: socket_id } } }, { new: true });
         if (!!utils) { response = true }
-        // console.log("utils => ", utils);
-
-
 
     }
     catch (err) {
@@ -155,8 +148,6 @@ class UserApi extends DataSource {
     initialize(config) {
         this.context = config.context;
         this.userDetails = this.context.user;
-        // console.log(config.context)
-
     }
 
     maskUser(user, userDetails) {
@@ -199,10 +190,6 @@ class UserApi extends DataSource {
     }
     async getUserbyUsername(username) {
 
-        // console.log("number 2");
-
-        // console.log("this.context", this.context)
-        // if (this.userDetails.auth) {
         var user, response;
         try {
             user = await User.findOne({ username: username });
@@ -233,7 +220,6 @@ class UserApi extends DataSource {
         var user, response;
         try {
             user = await User.find({});
-            // response = user;
             response = {
                 status: "200",
                 message: "User Created Successfully",
@@ -252,8 +238,6 @@ class UserApi extends DataSource {
 
     }
     async getUserbyId(id) {
-
-        // console.log("id", id);
 
         var user, response;
         try {
@@ -283,9 +267,7 @@ class UserApi extends DataSource {
             user = await User.findOne({ _id: id });
             userOut = {
                 username: user.username,
-                fullname: user.fullname,
-                // ideas: user.ideas,
-                // comments: user.comments
+                fullname: user.fullname
             }
         }
         catch (err) {
@@ -300,11 +282,10 @@ class UserApi extends DataSource {
 
     async me() {
 
-        // console.log("id", id);
 
         var user, response;
         var tee = await this.checkIdValidity(this.userDetails)
-        // console.log(tee);
+
         if (tee) {
             console.log("true entered");
 
@@ -398,7 +379,6 @@ class UserApi extends DataSource {
             response = { status: "401", message: "User Not Created", error: err.message };
 
         }
-        // console.log(response);
         return response;
 
     }

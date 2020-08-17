@@ -81,7 +81,6 @@ class MsgApi extends DataSource {
     initialize(config) {
         this.context = config.context;
         this.userDetails = this.context.user;
-        // console.log(config.context)
 
     }
     async checkIdValidity(userDetails) {
@@ -90,7 +89,6 @@ class MsgApi extends DataSource {
         if (userDetails.auth && date < userDetails.exp) {
             try {
                 var user = await User.findOne({ _id: userDetails.id });
-                // console.log(user);
                 if (user != null) {
                     out = true
                 }

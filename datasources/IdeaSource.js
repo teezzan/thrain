@@ -33,7 +33,6 @@ class IdeaApi extends DataSource {
     initialize(config) {
         this.context = config.context;
         this.userDetails = this.context.user;
-        // console.log(config.context)
 
     }
     async checkIdValidity(userDetails) {
@@ -42,7 +41,6 @@ class IdeaApi extends DataSource {
         if (userDetails.auth && date < userDetails.exp) {
             try {
                 var user = await User.findOne({ _id: userDetails.id });
-                // console.log(user);
                 if (user != null) {
                     out = true
                 }
@@ -59,9 +57,9 @@ class IdeaApi extends DataSource {
 
     }
     async getUserbyUsername(username) {
-        var user = null; 
+        var user = null;
         try {
-             user = await User.findOne({ username: username });
+            user = await User.findOne({ username: username });
         }
         catch (err) {
             console.log("err", err.message);
@@ -120,7 +118,6 @@ class IdeaApi extends DataSource {
         catch (err) {
             console.log("error occurred", err);
         }
-        // console.log("idea", idea);
         return idea;
 
     }
@@ -129,21 +126,18 @@ class IdeaApi extends DataSource {
 
         var user = await this.getUserbyUsername(username);
         var id = user._id;
-        // console.log("id", id);
         var idea;
         try {
-            idea = await Idea.find({ _id: {$in: user.liked_ideas} });
+            idea = await Idea.find({ _id: { $in: user.liked_ideas } });
         }
         catch (err) {
             console.log("error occurred", err);
         }
-        // console.log("idea", idea);
         return idea;
 
     }
     async getIdeabytag(tag) {
 
-        // console.log("tag", tag);
 
         var idea, response;
         try {
@@ -165,12 +159,10 @@ class IdeaApi extends DataSource {
 
     }
     async getAllIdea(page, pages) {
-        // console.log(page);
 
         var idea, response;
         try {
             idea = await Idea.find({}).limit(page);
-            // console.log("ideass ", idea);
 
             response = {
                 status: "200",
@@ -222,26 +214,9 @@ class IdeaApi extends DataSource {
         else {
             response = { status: "401", message: "Unauthorized" };
         }
-        // console.log(response);
         return response;
 
     }
-
-
-
-
-
-
-
-
-
-
 }
 
-
 module.exports = IdeaApi;
-
-// return new Promise((resolve) => {
-
-//     
-// }
