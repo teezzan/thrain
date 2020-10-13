@@ -1,6 +1,4 @@
-[![Moleculer](https://badgen.net/badge/Powered%20by/Moleculer/0e83cd)](https://moleculer.services)
-
-# commit-spy
+# IdeaHub
 This is a Graphql-based microservices project. IdeaHub is a graphql based system for storing and sharing ideas with the public while also getting feedback. It has various features for making the experience awesome. It allows users to
 
 - Create an Account
